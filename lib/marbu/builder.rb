@@ -25,15 +25,15 @@ module Marbu
     end
 
     def map
-      @builder_clasz.map(@map_reduce_model.map, @map_reduce_model.mapreduce_keys, @map_reduce_model.mapreduce_values)
+      @builder_clasz.map(@map_reduce_model.map)
     end
 
     def reduce
-      @builder_clasz.reduce(@map_reduce_model.reduce, @map_reduce_model.mapreduce_values)
+      @builder_clasz.reduce(@map_reduce_model.reduce)
     end
 
     def finalize
-      @builder_clasz.finalize(@map_reduce_model.finalize, @map_reduce_model.finalize_values)
+      @builder_clasz.finalize(@map_reduce_model.finalize)
     end
 
     def log

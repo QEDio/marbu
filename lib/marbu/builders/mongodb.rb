@@ -1,32 +1,31 @@
 module Marbu
   class Builder
     class Mongodb
-
-      def self.map(code, keys, values)
+      def self.map(map)
         <<-JS
          function(){
-            #{get_value(:map )}
-            #{code}
-            #{get_emit(:map, values, keys )}
+            #{get_value(:map)}
+            #{map.code}
+            #{get_emit(:map, map.values, map.keys)}
           }
         JS
       end
 
-      def self.reduce(code, values)
+      def self.reduce(reduce)
         <<-JS
           function(key,values){
             #{get_value(:reduce)}
-            #{code}
-            #{get_emit(:reduce, values )}
+            #{reduce.code}
+            #{get_emit(:reduce, reduce.values)}
           }
         JS
       end
 
-      def self.finalize(code, values)
+      def self.finalize(finalize)
       <<-JS
         function(key, value){
-          #{code}
-          #{get_emit(:finalize, values)}
+          #{finalize.code}
+          #{get_emit(:finalize, finalize.values)}
         }
       JS
     end

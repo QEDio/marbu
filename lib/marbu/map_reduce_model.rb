@@ -3,49 +3,61 @@ module Marbu
   # this model can be stored in a database and read again
   # the builder will use MapReduce-Models to build actual mapreduce code
   class MapReduceModel
-    attr_accessor :mapreduce_keys, :mapreduce_values, :finalize_values, :force_query
-    attr_reader   :map, :reduce, :finalize
-
-    ARRAY_INITS = [:mapreduce_values, :finalize_values]
+    attr_accessor :map, :reduce, :finalize, :query, :force_query, :database, :base_collection
+    attr_accessor :mr_collection
 
     def initialize(params = {})
-      @mapreduce_keys = []
-      @mapreduce_values = []
-      @finalize_values = []
+      # make a deep copy
+      cloned_params = Marshal.load(Marshal.dump(params))
       @map = nil
       @reduce = nil
       @finalize = nil
       @query = nil
       @force_query  = false
+      @database = nil
+      @base_collection = nil
+      @mr_collection = nil
 
-      params.keys.each do |k|
-        # generate key objects
-        if k.eql?(:mapreduce_keys) and respond_to?(k)
-          params[k].each do |kk|
-            # add key object to key attr_accessor
-            send("#{k}=".to_sym, send(k.to_sym) << Key.new(kk))
-          end
-        # generate value objects
-        elsif ARRAY_INITS.include?(k) and respond_to?(k)
-          params[k].each do |kk|
-            # generate and add value object to corresponding attr_accessor
-            send("#{k}=".to_sym, send(k.to_sym) << Value.new(kk))
-          end
-        else
-          send("#{k}=".to_sym, params[k]) if respond_to?(k)
-        end
+      mapreduce_keys    = cloned_params.delete(:mapreduce_keys)
+      mapreduce_values  = cloned_params.delete(:mapreduce_values)
+
+      @map = MapModel.new(
+          :keys         => mapreduce_keys,
+          :values       => mapreduce_values,
+          :code         => cloned_params.delete(:map)
+      )
+
+      @reduce = ReduceModel.new(
+          :keys         => mapreduce_keys,
+          :values       => mapreduce_values,
+          :code         => cloned_params.delete(:reduce)
+      )
+
+      @finalize = FinalizeModel.new(
+          :keys         => mapreduce_keys,
+          :values       => cloned_params.delete(:finalize_values),
+          :code         => cloned_params.delete(:finalize)
+      )
+
+
+      # initialize remaining object variables
+      cloned_params.keys.each do |k|
+        send("#{k}=".to_sym, params[k]) if respond_to?(k)
       end
     end
 
     def hash
       {
-          :mapreduce_keys             => @mapreduce_keys,
-          :mapreduce_values           => @mapreduce_values,
-          :finalize_values            => @finalize_values,
-          :map                        => @map,
-          :reduce                     => @reduce,
+          :mapreduce_keys             => @map.hash[:keys],
+          :mapreduce_values           => @reduce.hash[:values],
+          :finalize_values            => @finalize.hash[:values],
+          :database                   => @database,
+          :base_collection            => @base_collection,
+          :mr_collection              => @mr_collection,
           :query                      => @query,
-          :force_query                => @force_query
+          :map                        => @map.code,
+          :reduce                     => @reduce.code,
+          :finalize                   => @finalize.code
       }
     end
 
@@ -58,49 +70,62 @@ module Marbu
     end
 
     # sanatize JS in here
-    def map=(m)
-      @map = m
-    end
-
-    # sanatize JS in here
-    def reduce=(r)
-      @reduce = r
-    end
-
-    # sanatize JS in here
-    def finalize=(f)
-      @finalize = f
-    end
-
-    # sanatize JS in here
     def query=(q)
       @query = q
     end
 
-    class Key
-      attr_accessor :name, :function
+    class BaseModel
+      attr_accessor :keys, :values
+      attr_accessor :code
 
-      def initialize(params = {})
-        @name = nil
-        @function = nil
+      def initialize(ext_options = {})
+        int_options     = ext_options
+        @keys           = int_options[:keys].map{|k| Key.new(k)}
+        @values         = int_options[:values].map{|v| Value.new(v)}
+        @code           = int_options[:code]
+      end
 
-        params.keys.each do |k|
-          send("#{k}=".to_sym, params[k]) if respond_to?(k)
-        end
+      def hash
+        {
+            :keys       => @keys.collect(&:hash),
+            :values     => @values.collect(&:hash),
+            :code       => @code
+        }
+
       end
     end
 
-    class Value
+    class MapModel < BaseModel
+    end
+
+    class ReduceModel < BaseModel
+    end
+
+    class FinalizeModel < BaseModel
+    end
+
+    class KeyValueBase
       attr_accessor :name, :function
 
-      def initialize(params = {})
-        @name = nil
-        @function = nil
-
+      def initialize(params)
         params.keys.each do |k|
           send("#{k}=".to_sym, params[k]) if respond_to?(k)
         end
       end
+
+      def hash
+        # don't return nil values in hash
+        {
+            :name       => @name,
+            :function   => @function
+        }.keep_if{|k,v| v}
+      end
+    end
+
+    class Key < KeyValueBase
+    end
+
+    class Value < KeyValueBase
     end
   end
 end
