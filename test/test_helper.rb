@@ -93,6 +93,10 @@ unless Kernel.const_defined?("WWB_BASE_COLLECTION")
       :reduce               => REDUCE_WWB_DIM0,
       :finalize             => FINALIZE_WWB_DIM0
   }
+
+  MAP_FUNCTION_ONE_LINE       = "function(){value=this.value;count=1;emit(value.DIM_LOC_0,{DIM_LOC_0:value.DIM_LOC_0,count:count});}"
+  REDUCE_FUNCTION_ONE_LINE    = "function(key,values){value=values[0];varcount=0;values.forEach(function(v){count+=v.count;});return{DIM_LOC_0:value.DIM_LOC_0,count:count};}"
+  FINALIZE_FUNCTION_ONE_LINE  = "function(key,value){return{DIM_LOC_0:value.DIM_LOC_0,count:value.count};}"
 end
 
 class Test::Unit::TestCase
