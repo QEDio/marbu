@@ -22,6 +22,8 @@ module Marbu
       end
     end
 
+    get('/') { redirect '/builder' }
+    
     # to make things easier on ourselves
     get "/builder" do
       if Marbu.collection
