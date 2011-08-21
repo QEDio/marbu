@@ -1,7 +1,7 @@
 MA(p) R(educe) BU(ilder)
 ========================
 
-Marbu enables you to add mapreduce functionality to your software within seconds.
+Marbu enables you to add mapreduce code-generating functionality to your software within seconds.
 
 What does it do?
 ----------------
