@@ -26,7 +26,7 @@ module Marbu
 
     # to make things easier on ourselves
     get "/builder" do
-      mrm_hsh     = Marbu.collection.find_one# || TMP_MR_WWB_LOC_DIM0
+      mrm_hsh     = Marbu.collection.find_one || TMP_MR_WWB_LOC_DIM0
       @mrm        = Marbu::MapReduceModel.new(mrm_hsh)
       @builder    = Marbu::Builder.new(@mrm)
 
