@@ -12,32 +12,37 @@ module Marbu
   # Your code goes here...
   extend self
 
+  attr_reader :port, :uri
 
-  def database=(database = "marbu")
+  def database=(database)
     @database = database
   end
 
-  def collection=(collection = "mr")
+  def collection=(collection)
     @collection = collection
   end
 
-  def port=(port = 27017)
+  def port=(port)
     @port = port
   end
 
-  def uri=(uri = "127.0.0.1")
+  def uri=(uri)
     @uri = uri
   end
 
   def connection
+    @uri ||= "127.0.0.1"
+    @port = 27017
     @connection ||= Mongo::Connection.new(@uri, @port)
   end
 
   def database
+    @database ||= "marbu"
     connection.db(@database)
   end
 
   def collection
+    @collection ||= "mr"
     database.collection(@collection)
   end
 end
