@@ -12,20 +12,21 @@ module Marbu
   # Your code goes here...
   extend self
 
+  attr_reader :port, :uri
 
-  def database=(database = nil)
+  def database=(database)
     @database = database
   end
 
-  def collection=(collection = nil)
+  def collection=(collection)
     @collection = collection
   end
 
-  def port=(port = nil)
+  def port=(port)
     @port = port
   end
 
-  def uri=(uri = nil)
+  def uri=(uri)
     @uri = uri
   end
 
