@@ -6,9 +6,7 @@ module Marbu
     attr_accessor :map, :reduce, :finalize, :query, :force_query, :database, :base_collection
     attr_accessor :mr_collection
 
-    def initialize(params = {})
-      # make a deep copy
-      cloned_params = Marshal.load(Marshal.dump(params))
+    def initialize(params = nil)
       @map = nil
       @reduce = nil
       @finalize = nil
@@ -18,31 +16,36 @@ module Marbu
       @base_collection = nil
       @mr_collection = nil
 
-      mapreduce_keys    = cloned_params.delete(:mapreduce_keys)
-      mapreduce_values  = cloned_params.delete(:mapreduce_values)
+      if( params )
+        # make a deep copy
+        cloned_params = Marshal.load(Marshal.dump(params))
 
-      @map = MapModel.new(
-          :keys         => mapreduce_keys,
-          :values       => mapreduce_values,
-          :code         => cloned_params.delete(:map)
-      )
+        mapreduce_keys    = cloned_params.delete(:mapreduce_keys) || cloned_params.delete("mapreduce_keys")
+        mapreduce_values  = cloned_params.delete(:mapreduce_values) || cloned_params.delete("mapreduce_values")
 
-      @reduce = ReduceModel.new(
-          :keys         => mapreduce_keys,
-          :values       => mapreduce_values,
-          :code         => cloned_params.delete(:reduce)
-      )
+        @map = MapModel.new(
+            :keys         => mapreduce_keys,
+            :values       => mapreduce_values,
+            :code         => cloned_params.delete(:map) || cloned_params.delete("map")
+        )
 
-      @finalize = FinalizeModel.new(
-          :keys         => mapreduce_keys,
-          :values       => cloned_params.delete(:finalize_values),
-          :code         => cloned_params.delete(:finalize)
-      )
+        @reduce = ReduceModel.new(
+            :keys         => mapreduce_keys,
+            :values       => mapreduce_values,
+            :code         => cloned_params.delete(:reduce) || cloned_params.delete("reduce")
+        )
+
+        @finalize = FinalizeModel.new(
+            :keys         => mapreduce_keys,
+            :values       => cloned_params.delete(:finalize_values) || cloned_params.delete("finalize_values"),
+            :code         => cloned_params.delete(:finalize) || cloned_params.delete("finalize")
+        )
 
 
-      # initialize remaining object variables
-      cloned_params.keys.each do |k|
-        send("#{k}=".to_sym, params[k]) if respond_to?(k)
+        # initialize remaining object variables
+        cloned_params.keys.each do |k|
+          send("#{k}=".to_sym, params[k]) if respond_to?(k.to_sym)
+        end
       end
     end
 
@@ -78,11 +81,17 @@ module Marbu
       attr_accessor :keys, :values
       attr_accessor :code
 
-      def initialize(ext_options = {})
-        int_options     = ext_options
-        @keys           = int_options[:keys].map{|k| Key.new(k)}
-        @values         = int_options[:values].map{|v| Value.new(v)}
-        @code           = int_options[:code]
+      def initialize(ext_options = nil)
+        @keys           = []
+        @values         = []
+        @code           = nil
+
+        if ext_options
+          int_options     = ext_options
+          @keys           = int_options[:keys].map{|k| Key.new(k) }
+          @values         = int_options[:values].map{|v| Value.new(v) }
+          @code           = int_options[:code]
+        end
       end
 
       def hash
@@ -91,8 +100,23 @@ module Marbu
             :values     => @values.collect(&:hash),
             :code       => @code
         }
-
       end
+
+      def add_key(name, function)
+        add(:key, name, function)
+      end
+
+      def add_value(name, function)
+        add(:value, name, function)
+      end
+
+      private
+        def add(type, name, function)
+          case type
+            when :key     then @keys << Key.new({:name => name, :function => function})
+            when :value   then @values << Value.new({:name => name, :function => function})
+          end
+        end
     end
 
     class MapModel < BaseModel

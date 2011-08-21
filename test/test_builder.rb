@@ -4,11 +4,11 @@ class TestBuilder < Test::Unit::TestCase
   context "intializing a map_reduce object" do
     setup do
       @model = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0)
-      @builder = Marbu::Builder.new({:map_reduce_model => @model})
+      @builder = Marbu::Builder.new(@model)
     end
 
     should "should create a builder" do
-      @builder = Marbu::Builder.new({:map_reduce_model => @model})
+      @builder = Marbu::Builder.new(@model)
     end
 
     should "create a map query" do
@@ -16,7 +16,7 @@ class TestBuilder < Test::Unit::TestCase
     end
 
     should 'create the correct map query' do
-      assert_equal MAP_FUNCTION_ONE_LINE, Marbu::Formatter::Misc.one_line(@builder.map)
+      assert_equal MAP_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder.map)
     end
 
     should "create a reduce query" do
@@ -24,7 +24,7 @@ class TestBuilder < Test::Unit::TestCase
     end
 
     should 'create the correct reduce query' do
-      assert_equal REDUCE_FUNCTION_ONE_LINE, Marbu::Formatter::Misc.one_line(@builder.reduce)
+      assert_equal REDUCE_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder.reduce)
     end
 
     should "create a finalize query" do
@@ -32,7 +32,7 @@ class TestBuilder < Test::Unit::TestCase
     end
 
     should 'create the correct finalize query' do
-      assert_equal FINALIZE_FUNCTION_ONE_LINE, Marbu::Formatter::Misc.one_line(@builder.finalize)
+      assert_equal FINALIZE_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder.finalize)
     end
   end
 

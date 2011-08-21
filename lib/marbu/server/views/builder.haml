@@ -1,13 +1,33 @@
-%form{:action => "", :method => "post" }
+%form{:action => "builder", :method => "post" }
   %table
     %th= "Key"
     %th= "Value"
-    %tr
-      %td
-        %label{:for => "key1"} Key:
-        %input{:type =>  "text", :name => "key1", :class => "text", :value => @map.keys.first.name}
+    %th= "Code"
+    - [@map, @reduce, @finalize].each do |mr_step|
+      - type = mr_step[:type]
+      - mr_step[:blocks].keys.each_with_index do |key, i|
+        %tr
+          %td
+            %label{:for => "#{type}_key_#{i}"} Key #{i}:
+            %input{:type =>  "text", :name => "#{type}_key_name_#{i}", :class => "text", :value => key.name}
+          %td
+            %label{:for => "#{type}_key_function_#{i}"} Function #{i}:
+            %input{:type =>  "text", :name => "#{type}_key_function_#{i}", :class => "text", :value => key.function}
+      - mr_step[:blocks].values.each_with_index do |value, i|
+        %tr
+          %td
+            %label{:for => "#{type}_value_#{i}"} Value #{i}:
+            %input{:type =>  "text", :name => "#{type}_value_name_#{i}", :class => "text", :value => value.name}
+          %td
+            %label{:for => "#{type}_value_function_#{i}"} Function #{i}:
+            %input{:type =>  "text", :name => "#{type}_value_function_#{i}", :class => "text", :value => value.function}
+      %tr
+        %td{:colspan => 2}
+          %label{:for => "code"} Code:
+          %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 100}= mr_step[:blocks].code
 
-  
-  %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50}
+      %tr
+        %td{:colspan => 2}
+          %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 100}= mr_step[:code]
 
-  %input{:type => "submit", :value => "Send", :class => "button"}
+  %input{:type => "submit", :value => "Save", :class => "button"}

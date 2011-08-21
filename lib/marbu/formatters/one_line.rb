@@ -1,7 +1,7 @@
 module Marbu
   class Formatter
-    class Misc
-      def self.one_line(str)
+    class OneLine < Base
+      def self.perform(str)
         str.gsub(/( |\n)/, '')
       end
     end

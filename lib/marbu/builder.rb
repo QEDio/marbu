@@ -1,10 +1,13 @@
 module Marbu
+  # the builder class is a lightweight container that holds a MapReduceModel and the requester Builder class
+  # its basically a front for the internals of the builders
   class Builder
     attr_accessor :map_reduce_model
 
-    def initialize(params = {})
-      @map_reduce_model = params[:map_reduce_model]
-      @builder_clasz    = params[:builder] || Marbu::Builder::Mongodb
+    def initialize(mrm, options = {})
+      @map_reduce_model = mrm
+      @builder_clasz    = options[:builder] || Marbu::Builder::Mongodb
+      @formatter_clasz  = options[:formatter] || Marbu::Formatter::Dummy
     end
 
     def mr_key
@@ -25,15 +28,15 @@ module Marbu
     end
 
     def map
-      @builder_clasz.map(@map_reduce_model.map)
+      @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map))
     end
 
     def reduce
-      @builder_clasz.reduce(@map_reduce_model.reduce)
+      @formatter_clasz.perform(@builder_clasz.reduce(@map_reduce_model.reduce))
     end
 
     def finalize
-      @builder_clasz.finalize(@map_reduce_model.finalize)
+      @formatter_clasz.perform(@builder_clasz.finalize(@map_reduce_model.finalize))
     end
 
     def log

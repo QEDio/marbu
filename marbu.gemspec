@@ -19,10 +19,11 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_dependency('rake')
-  s.add_dependency "vegas"
-  s.add_dependency "sinatra"
-  s.add_dependency "haml"
+  s.add_dependency 'rake'
+  s.add_dependency 'vegas'
+  s.add_dependency 'sinatra'
+  s.add_dependency 'haml'
+  s.add_dependency 'mongo'
   
   s.add_development_dependency('shoulda')
   s.add_development_dependency('spork')

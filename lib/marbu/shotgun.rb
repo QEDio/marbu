@@ -20,6 +20,7 @@
   TMP_MR_WWB_LOC_DIM0 =
   {
       :mapreduce_keys => [
+          {:name => "DIM_LOC_0", :function => "value.DIM_LOC_0"},
           {:name => "DIM_LOC_0", :function => "value.DIM_LOC_0"}
         ],
       :mapreduce_values =>  [
