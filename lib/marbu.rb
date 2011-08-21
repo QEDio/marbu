@@ -13,32 +13,46 @@ module Marbu
   extend self
 
 
-  def database=(database = "marbu")
+  def database=(database = nil)
     @database = database
   end
 
-  def collection=(collection = "mr")
+  def collection=(collection = nil)
     @collection = collection
   end
 
-  def port=(port = 27017)
+  def port=(port = nil)
     @port = port
   end
 
-  def uri=(uri = "127.0.0.1")
+  def uri=(uri = nil)
     @uri = uri
   end
 
   def connection
-    @connection ||= Mongo::Connection.new(@uri, @port)
+    if( @uri and @port )
+      @connection ||= Mongo::Connection.new(@uri, @port)
+    else
+      @connection = nil
+    end
+
+    @connection
   end
 
   def database
-    connection.db(@database)
+    if connection and @database
+      connection.db(@database)
+    else
+      nil
+    end
   end
 
   def collection
-    database.collection(@collection)
+    if database and @collection
+      database.collection(@collection)
+    else
+      nil
+    end
   end
 end
 

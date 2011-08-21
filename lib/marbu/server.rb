@@ -24,7 +24,12 @@ module Marbu
 
     # to make things easier on ourselves
     get "/builder" do
-      mrm_hsh     = Marbu.collection.find_one# || TMP_MR_WWB_LOC_DIM0
+      if Marbu.collection
+        mrm_hsh   = Marbu.collection.find_one || TMP_MR_WWB_LOC_DIM0
+      else
+        mrm_hsh   = TMP_MR_WWB_LOC_DIM0
+      end
+
       @mrm        = Marbu::MapReduceModel.new(mrm_hsh)
       @builder    = Marbu::Builder.new(@mrm)
       
@@ -64,7 +69,9 @@ module Marbu
         end
       end
 
-      Marbu.collection.insert(@mrm.hash)
+      if( Marbu.collection )
+        Marbu.collection.insert(@mrm.hash)
+      end
 
       @builder    = Marbu::Builder.new(@mrm)
       @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
