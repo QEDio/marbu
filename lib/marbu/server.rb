@@ -43,7 +43,6 @@ module Marbu
     end
 
     post "/builder" do
-      puts "params: #{params.inspect}"
       @mrm         = Marbu::MapReduceModel.new
       map          = Marbu::MapReduceModel::MapModel.new
       reduce       = Marbu::MapReduceModel::ReduceModel.new
