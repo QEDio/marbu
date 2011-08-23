@@ -25,15 +25,6 @@ module Marbu
       end
     end
 
-    # return true if we have a map and a reduce function defined
-    def mapreduce?
-      !(@map_reduce_model.map.nil? && @@map_reduce_model.reduce.nil?)
-    end
-
-    def query_only?
-      @map_reduce_model.force_query || (!mapreduce? && !@map_reduce_model.query.nil?)
-    end
-
     def map
       @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map))
     end
@@ -44,14 +35,6 @@ module Marbu
 
     def finalize
       @formatter_clasz.perform(@builder_clasz.finalize(@map_reduce_model.finalize))
-    end
-
-    def query
-      @map_reduce_model.query
-    end
-
-    def database
-      @map_reduce_model.database
     end
 
     def log

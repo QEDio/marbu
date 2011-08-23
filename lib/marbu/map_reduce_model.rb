@@ -64,6 +64,15 @@ module Marbu
       }
     end
 
+    # return true if we have a map and a reduce function defined
+    def mapreduce?
+      !(map.nil? && reduce.nil?)
+    end
+
+    def query_only?
+      force_query || (!mapreduce? && !query.nil?)
+    end
+
     def eql?(other)
       hash == other.hash
     end
