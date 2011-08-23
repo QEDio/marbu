@@ -88,7 +88,7 @@ module Marbu
 
     def mr_key
       [].tap do |arr|
-        mapreduce_keys.each do |mapreduce_key|
+        @map.mapreduce_keys.each do |mapreduce_key|
           arr << mapreduce_key.name
         end
       end
