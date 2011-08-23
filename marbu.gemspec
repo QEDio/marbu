@@ -6,11 +6,11 @@ Gem::Specification.new do |s|
   s.name        = "marbu"
   s.version     = Marbu::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["TODO: Write your name"]
-  s.email       = ["TODO: Write your email address"]
+  s.authors     = ["Johannes Kaefer"]
+  s.email       = ["jak4@qed.io"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{MA(p) R(educe) BU(ilder)}
+  s.description = %q{Integrate fancy MapReduce Bulding functionality with one gem install}
 
   s.rubyforge_project = "marbu"
 
