@@ -37,6 +37,10 @@ module Marbu
       @formatter_clasz.perform(@builder_clasz.finalize(@map_reduce_model.finalize))
     end
 
+    def query
+      @map_reduce_model.query
+    end
+
     def log
       self.to_s
     end
