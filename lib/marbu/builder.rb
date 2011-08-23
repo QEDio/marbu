@@ -17,14 +17,6 @@ module Marbu
       @formatter_clasz  = options[:formatter] || Marbu::Formatter::Dummy
     end
 
-    def mr_key
-      [].tap do |arr|
-        @map_reduce_model.mapreduce_keys.each do |mapreduce_key|
-          arr << mapreduce_key.name
-        end
-      end
-    end
-
     def map
       @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map))
     end

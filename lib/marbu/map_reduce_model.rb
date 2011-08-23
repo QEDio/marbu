@@ -86,6 +86,14 @@ module Marbu
       @query = q
     end
 
+    def mr_key
+      [].tap do |arr|
+        mapreduce_keys.each do |mapreduce_key|
+          arr << mapreduce_key.name
+        end
+      end
+    end
+
     class BaseModel
       attr_accessor :keys, :values
       attr_accessor :code
