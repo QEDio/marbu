@@ -5,7 +5,14 @@ module Marbu
     attr_accessor :map_reduce_model
 
     def initialize(mrm, options = {})
-      @map_reduce_model = mrm
+      if mrm.is_a?(Marbu::MapReduceModel)
+        @map_reduce_model = mrm
+      elsif mrm.is_a?(Hash)
+        @map_reduce_model = Marbu::MapReduceModel.new(mrm)
+      else
+        raise Exception.new("Parameter mrm was neither of type MapReduceModel nor Hash. Aborting")
+      end
+      
       @builder_clasz    = options[:builder] || Marbu::Builder::Mongodb
       @formatter_clasz  = options[:formatter] || Marbu::Formatter::Dummy
     end
