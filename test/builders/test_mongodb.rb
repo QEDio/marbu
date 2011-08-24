@@ -13,7 +13,6 @@ class TestBuilderMongodb < Test::Unit::TestCase
       end
 
       should 'create the correct map query' do
-        puts @builder_clasz.map(@mrm.map)
         assert_equal MONGODB_MAP_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder_clasz.map(@mrm.map))
       end
 
@@ -45,9 +44,7 @@ class TestBuilderMongodb < Test::Unit::TestCase
       end
 
       should 'create the correct map query' do
-        #puts @mrm.serializable_hash.inspect
-        puts @builder_clasz.map(@mrm.map)
-        assert_equal MONGODB_MAP_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder_clasz.map(@mrm.map))
+        assert_equal MONGODB_MAP_FUNCTION_TWO_EMIT_KEYS_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder_clasz.map(@mrm.map))
       end
 
       should "create a reduce query" do

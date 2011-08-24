@@ -133,7 +133,7 @@ module Marbu
 
       private
         def add(type, name, function)
-          function = VALUE_STR + name unless function
+          function = VALUE_STR + '.' + name unless function
           case type
             when :key     then @keys << Key.new({:name => name, :function => function})
             when :value   then @values << Value.new({:name => name, :function => function})

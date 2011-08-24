@@ -40,4 +40,41 @@ class TestMapReduceModel < Test::Unit::TestCase
 
     end
   end
+
+  ################### base model tests #############################
+
+  context "BaseModel" do
+    setup do
+      @key                            = 'key'
+      @function                       = 'function'
+      @modified_key_in_function       = 'value.key'
+      @bm                             = Marbu::MapReduceModel::BaseModel.new
+    end
+
+    context "adding an emit_key with add_key(key,function)" do
+      setup do
+        @bm.add_key(@key, @function)
+      end
+
+      should "add the keys and return them unchanged" do
+        assert_equal 1, @bm.keys.size
+        key = @bm.keys.first
+        assert_equal @key, key.name
+        assert_equal @function, key.function
+      end
+    end
+
+    context "adding an emit_key with add_key(key)" do
+      setup do
+        @bm.add_key(@key)
+      end
+
+      should "add the key and create the function with 'value.key'" do
+        assert_equal 1, @bm.keys.size
+        key = @bm.keys.first
+        assert_equal @key, key.name
+        assert_equal @modified_key_in_function, key.function
+      end
+    end
+  end
 end
