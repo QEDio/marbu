@@ -46,22 +46,6 @@ class TestBuilderMongodb < Test::Unit::TestCase
       should 'create the correct map query' do
         assert_equal MONGODB_MAP_FUNCTION_TWO_EMIT_KEYS_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder_clasz.map(@mrm.map))
       end
-
-      should "create a reduce query" do
-        assert @builder_clasz.reduce(@mrm.reduce).size > 0, "Didn't return a correctly build map object'"
-      end
-
-      should 'create the correct reduce query' do
-        assert_equal MONGODB_REDUCE_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder_clasz.reduce(@mrm.reduce))
-      end
-
-      should "create a finalize query" do
-        assert @builder_clasz.finalize(@mrm.finalize).size > 0, "Didn't return a correctly build map object'"
-      end
-
-      should 'create the correct finalize query' do
-        assert_equal MONGODB_FINALIZE_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder_clasz.finalize(@mrm.finalize))
-      end
     end
   end
 end
