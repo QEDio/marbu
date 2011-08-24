@@ -28,7 +28,7 @@ class TestMapReduceModel < Test::Unit::TestCase
       @mrm = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0)
     end
     should "create correctly and produce that hash again" do
-      assert_equal MR_WWB_LOC_DIM0, @mrm.hash
+      assert_equal MR_WWB_LOC_DIM0, @mrm.serializable_hash
     end
   end
 
