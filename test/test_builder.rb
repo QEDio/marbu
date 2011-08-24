@@ -3,12 +3,8 @@ require File.dirname(__FILE__) + '/test_helper.rb'
 class TestBuilder < Test::Unit::TestCase
   context "intializing a map_reduce object" do
     setup do
-      @model = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0)
-      @builder = Marbu::Builder.new(@model)
-    end
-
-    should "should create a builder" do
-      @builder = Marbu::Builder.new(@model)
+      @mrm        = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0)
+      @builder    = Marbu::Builder.new( @mrm)
     end
 
     should "create a map query" do
@@ -33,6 +29,21 @@ class TestBuilder < Test::Unit::TestCase
 
     should 'create the correct finalize query' do
       assert_equal FINALIZE_FUNCTION_ONE_LINE, Marbu::Formatter::OneLine.perform(@builder.finalize)
+    end
+  end
+
+  context "when requesting the map code" do
+    context "and no map emit keys are defined it" do
+      setup do
+        @mrm        = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0_NO_MAP_EMIT_KEYS)
+        @builder    = Marbu::Builder.new(@mrm)
+      end
+
+      should "raise NoEmitKeysDefined" do
+        assert_raise Marbu::Exceptions::NoEmitKeys do
+          @builder.map
+        end
+      end
     end
   end
 

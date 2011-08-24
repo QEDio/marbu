@@ -14,7 +14,7 @@ class TestMapReduceModel < Test::Unit::TestCase
   end
 
   context "creating a MapModel with no parameters" do
-    should "return empty arrays or nil for it's values'" do
+    should "return a empty arrays or nil for it's values" do
       map_model = Marbu::MapReduceModel::MapModel.new
 
       assert_equal [], map_model.keys
@@ -23,12 +23,21 @@ class TestMapReduceModel < Test::Unit::TestCase
     end
   end
 
-    context "when creating with a valid params hash it" do
+  context "when creating with a valid params hash it" do
     setup do
       @mrm = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0)
     end
-      should "create correctly and produce that hash again" do
-        assert_equal MR_WWB_LOC_DIM0, @mrm.hash
-      end
+    should "create correctly and produce that hash again" do
+      assert_equal MR_WWB_LOC_DIM0, @mrm.hash
+    end
+  end
+
+  context "when adding a emit_key with no function it" do
+    setup do
+      @mrm = Marbu::MapReduceModel.new(MR_WWB_LOC_DIM0)
+    end
+    should "create the function automatically" do
+
+    end
   end
 end

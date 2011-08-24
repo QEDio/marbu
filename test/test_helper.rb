@@ -94,6 +94,28 @@ unless Kernel.const_defined?("WWB_BASE_COLLECTION")
       :finalize             => FINALIZE_WWB_DIM0
   }
 
+  MR_WWB_LOC_DIM0_NO_MAP_EMIT_KEYS =
+  {
+      :mapreduce_keys => [
+        ],
+      :mapreduce_values =>  [
+          {:name => "DIM_LOC_0",            :function => "value.DIM_LOC_0"},
+          {:name => "count"}
+        ],
+      :finalize_values => [
+          {:name => "DIM_LOC_0",            :function => "value.DIM_LOC_0"},
+          {:name => "count",                :function => "value.count"}
+      ],
+      :database             => "qed_test",
+      :base_collection      => WWB_BASE_COLLECTION,
+      :mr_collection        => "#{WWB_BASE_COLLECTION}_mr_dim0",
+      :query                => nil,
+      :map                  => MAP_WWB_DIM0,
+      :reduce               => REDUCE_WWB_DIM0,
+      :finalize             => FINALIZE_WWB_DIM0
+  }
+
+
   MAP_FUNCTION_ONE_LINE       = "function(){value=this.value;count=1;emit(value.DIM_LOC_0,{DIM_LOC_0:value.DIM_LOC_0,count:count});}"
   REDUCE_FUNCTION_ONE_LINE    = "function(key,values){value=values[0];varcount=0;values.forEach(function(v){count+=v.count;});return{DIM_LOC_0:value.DIM_LOC_0,count:count};}"
   FINALIZE_FUNCTION_ONE_LINE  = "function(key,value){return{DIM_LOC_0:value.DIM_LOC_0,count:value.count};}"

@@ -5,6 +5,9 @@ module Marbu
   class MapReduceModel
     attr_accessor :map, :reduce, :finalize, :query, :force_query, :database, :base_collection
     attr_accessor :mr_collection
+    VALUE = :value
+    VALUE_STR = VALUE.to_s
+    DOCUMENT_OFFSET = VALUE.to_s + "."
 
     def initialize(params = nil)
       @map = nil
@@ -120,16 +123,17 @@ module Marbu
         }
       end
 
-      def add_key(name, function)
+      def add_key(name, function = nil)
         add(:key, name, function)
       end
 
-      def add_value(name, function)
+      def add_value(name, function = nil)
         add(:value, name, function)
       end
 
       private
         def add(type, name, function)
+          function = VALUE_STR + name unless function
           case type
             when :key     then @keys << Key.new({:name => name, :function => function})
             when :value   then @values << Value.new({:name => name, :function => function})
