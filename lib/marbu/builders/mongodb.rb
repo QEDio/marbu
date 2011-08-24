@@ -66,14 +66,7 @@ module Marbu
         def self.emit_keys(keys)
           raise Exceptions::NoEmitKeys.new if keys.size == 0
           
-          ret_val = "{"
-
-          keys.each do |k|
-            ret_val += "#{k.function||k.name},"
-          end
-
-          # delete last comma
-          return ret_val[0..ret_val.size-2]+"}"
+          emit_core(keys)
         end
 
         def self.emit_core(values)
