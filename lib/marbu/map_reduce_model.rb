@@ -52,11 +52,11 @@ module Marbu
       end
     end
 
-    def hash
+    def serializable_hash
       {
-          :mapreduce_keys             => @map.hash[:keys],
-          :mapreduce_values           => @reduce.hash[:values],
-          :finalize_values            => @finalize.hash[:values],
+          :mapreduce_keys             => @map.serializable_hash[:keys],
+          :mapreduce_values           => @reduce.serializable_hash[:values],
+          :finalize_values            => @finalize.serializable_hash[:values],
           :database                   => @database,
           :base_collection            => @base_collection,
           :mr_collection              => @mr_collection,
@@ -77,7 +77,7 @@ module Marbu
     end
 
     def eql?(other)
-      hash == other.hash
+      serializable_hash == other.serializable_hash
     end
 
     def ==(other)
@@ -115,10 +115,10 @@ module Marbu
         end
       end
 
-      def hash
+      def serializable_hash
         {
-            :keys       => @keys.collect(&:hash),
-            :values     => @values.collect(&:hash),
+            :keys       => @keys.collect(&:serializable_hash),
+            :values     => @values.collect(&:serializable_hash),
             :code       => @code
         }
       end
@@ -159,7 +159,7 @@ module Marbu
         end
       end
 
-      def hash
+      def serializable_hash
         # don't return nil values in hash
         {
             :name       => @name,
