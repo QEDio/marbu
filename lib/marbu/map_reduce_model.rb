@@ -159,6 +159,10 @@ module Marbu
         end
       end
 
+      def name=(name)
+        @name = name.to_s
+      end
+      
       def serializable_hash
         # don't return nil values in hash
         {

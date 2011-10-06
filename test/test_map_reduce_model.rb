@@ -51,6 +51,20 @@ class TestMapReduceModel < Test::Unit::TestCase
       @bm                             = Marbu::MapReduceModel::BaseModel.new
     end
 
+    context "adding an emit_key symbol with add_key(key,function" do
+      setup do
+        @bm.add_key(@key.to_sym)
+      end
+
+      should "set the key as string" do
+        assert_equal @key, @bm.keys.first.name
+      end
+
+      should "use the key as string when creating the function" do
+        assert_equal "value.key", @bm.keys.first.function
+      end
+    end
+
     context "adding an emit_key with add_key(key,function)" do
       setup do
         @bm.add_key(@key, @function)
@@ -69,7 +83,7 @@ class TestMapReduceModel < Test::Unit::TestCase
         @bm.add_key(@key)
       end
 
-      should "add the key and create the function with 'value.key'" do
+      should "add the key as symbol and create the function with 'value.key'" do
         assert_equal 1, @bm.keys.size
         key = @bm.keys.first
         assert_equal @key, key.name
