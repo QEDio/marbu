@@ -5,11 +5,15 @@ require 'marbu'
 
 module Marbu
   class Server < Sinatra::Base
+    logger = ::File.open("log/development.log", "a")
+    STDOUT.reopen(logger)
+    STDERR.reopen(logger)
+    
     dir = File.dirname(File.expand_path(__FILE__))
     set :views, "#{dir}/server/views"
-    set :public, "#{dir}/server/public"
+    set :public_folder, "#{dir}/server/public"
     set :static, true
-    set :logging, STDERR
+    enable :logging
 
     helpers do
       def url_path(*path_parts)
@@ -32,9 +36,12 @@ module Marbu
         mrm_hsh   = TMP_MR_WWB_LOC_DIM0
       end
 
+      logger.puts(mrm_hsh.inspect)
+      logger.flush
+
       @mrm        = Marbu::MapReduceModel.new(mrm_hsh)
       @builder    = Marbu::Builder.new(@mrm)
-      
+
       @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
       @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
       @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
