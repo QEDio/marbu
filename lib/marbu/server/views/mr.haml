@@ -1,0 +1,4 @@
+%form{:action => "mr", :method => "get" }
+  %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 100}= @res.find().to_a.inspect
+
+  %input{:type => "submit", :value => "Save", :class => "button"}

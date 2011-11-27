@@ -8,26 +8,30 @@
       - mr_step[:blocks].keys.each_with_index do |key, i|
         %tr
           %td
-            %label{:for => "#{type}_key_#{i}"} Key #{i}:
+            %label{:for => "#{type}_key_#{i}"} Emit-Key #{i}:
             %input{:type =>  "text", :name => "#{type}_key_name_#{i}", :class => "text", :value => key.name}
           %td
-            %label{:for => "#{type}_key_function_#{i}"} Function #{i}:
+            %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function #{i}:
             %input{:type =>  "text", :name => "#{type}_key_function_#{i}", :class => "text", :value => key.function}
       - mr_step[:blocks].values.each_with_index do |value, i|
         %tr
           %td
-            %label{:for => "#{type}_value_#{i}"} Value #{i}:
+            %label{:for => "#{type}_value_#{i}"} Emit-Value #{i}:
             %input{:type =>  "text", :name => "#{type}_value_name_#{i}", :class => "text", :value => value.name}
           %td
-            %label{:for => "#{type}_value_function_#{i}"} Function #{i}:
+            %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function #{i}:
             %input{:type =>  "text", :name => "#{type}_value_function_#{i}", :class => "text", :value => value.function}
       %tr
-        %td{:colspan => 2}
-          %label{:for => "code"} Code:
-          %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 100}= mr_step[:blocks].code
+        %td{:colspan => 3}
+          %label{:for => "code"} Your Javascript-Code:
+          %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 50}= mr_step[:blocks].code
 
       %tr
         %td{:colspan => 2}
-          %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 100}= mr_step[:code]
+          %label{:for => "code"} MR-Code for #{mr_step[:type]}:
+          %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50}= mr_step[:code]
 
+  %input{:type => 'hidden', :name => 'database',          :value => @mrm.database}
+  %input{:type => 'hidden', :name => 'base_collection',   :value => @mrm.base_collection}
+  %input{:type => 'hidden', :name => 'mr_collection',     :value => @mrm.mr_collection}
   %input{:type => "submit", :value => "Save", :class => "button"}
