@@ -14,6 +14,7 @@ module Marbu
   extend self
 
   attr_reader :port, :uri
+  attr_accessor :storage
 
   def database=(database)
     @database = database
@@ -55,6 +56,10 @@ module Marbu
     else
       nil
     end
+  end
+
+  def storage_collection
+    Mongo::Connection.new(storage[:uri],storage[:port]).db(storage[:database]).collection(storage[:collection])
   end
 end
 

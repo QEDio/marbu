@@ -7,7 +7,7 @@ module Marbu
   class Server < Sinatra::Base
     dir = File.dirname(File.expand_path(__FILE__))
     set :views, "#{dir}/server/views"
-    set :public, "#{dir}/server/public"
+    set :public_folder, "#{dir}/server/public"
     set :static, true
     set :logging, STDERR
 
@@ -26,8 +26,10 @@ module Marbu
     
     # to make things easier on ourselves
     get "/builder" do
-      if Marbu.collection
-        mrm_hsh   = Marbu.collection.find_one || TMP_MR_WWB_LOC_DIM0
+      storage_collection = Marbu.storage_collection
+
+      if storage_collection
+        mrm_hsh   = storage_collection.find_one || TMP_MR_WWB_LOC_DIM0
       else
         mrm_hsh   = TMP_MR_WWB_LOC_DIM0
       end
@@ -70,8 +72,9 @@ module Marbu
         end
       end
 
-      if( Marbu.collection )
-        Marbu.collection.insert(@mrm.hash)
+      storage_collection = Marbu.storage_collection
+      if( storage_collection )
+        storage_collection.insert(@mrm.hash)
       end
 
       @builder    = Marbu::Builder.new(@mrm)

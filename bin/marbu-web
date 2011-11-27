@@ -16,5 +16,5 @@ Vegas::Runner.new(Marbu::Server, 'marbu-web', {
     load path.to_s.strip if path
   }
 }) do |runner, opts, app|
-  
+
 end
