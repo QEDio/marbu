@@ -3,9 +3,10 @@ require 'marbu/formatters/base'
 require 'marbu/formatters/dummy'
 require 'marbu/formatters/one_line'
 require 'marbu/builders/mongodb'
-require 'marbu/map_reduce_model'
 require 'marbu/builder'
 require 'marbu/shotgun'
+
+require 'marbu/models/models'
 
 require 'mongo'
 

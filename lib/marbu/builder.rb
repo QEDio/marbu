@@ -5,10 +5,10 @@ module Marbu
     attr_accessor :map_reduce_model
 
     def initialize(mrm, options = {})
-      if mrm.is_a?(Marbu::MapReduceModel)
+      if mrm.is_a?(Marbu::Models::MapReduceFinalize)
         @map_reduce_model = mrm
       elsif mrm.is_a?(Hash)
-        @map_reduce_model = Marbu::MapReduceModel.new(mrm)
+        @map_reduce_model = Marbu::Models::MapReduceFinalize.new(mrm)
       else
         raise Exception.new("Parameter mrm was neither of type MapReduceModel nor Hash. Aborting")
       end

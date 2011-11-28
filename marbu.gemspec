@@ -25,10 +25,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'mongo'
 
-  s.add_development_dependency('shoulda')
-  s.add_development_dependency('spork')
-  s.add_development_dependency('spork-testunit')
-  s.add_development_dependency('simplecov')
-
-  s.add_development_dependency('shotgun')
+  s.add_development_dependency 'turn'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'spork'
+  s.add_development_dependency 'spork-testunit'
+  s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'factory_girl'
+  s.add_development_dependency 'i18n'
 end

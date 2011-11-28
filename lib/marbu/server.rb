@@ -38,13 +38,8 @@ module Marbu
         mrm_hsh   = MR_MONGODB_EXAMPLE
       end
 
-      @mrm        = Marbu::MapReduceModel.new(mrm_hsh)
-
-      logger.puts(@mrm.serializable_hash.inspect)
-      logger.flush
-
+      @mrm        = Marbu::Models::MapReduceFinalize.new(mrm_hsh)
       @builder    = Marbu::Builder.new(@mrm)
-      
       @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
       @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
       @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
@@ -53,35 +48,13 @@ module Marbu
     end
 
     post "/builder" do
-      @mrm                  = Marbu::MapReduceModel.new
-      @mrm.database         = params.delete('database')
-      @mrm.base_collection  = params.delete('base_collection')
-      @mrm.mr_collection    = params.delete('mr_collection')
-      map                   = Marbu::MapReduceModel::MapModel.new
-      reduce                = Marbu::MapReduceModel::ReduceModel.new
-      finalize              = Marbu::MapReduceModel::FinalizeModel.new
+      @mrm                  = build_mrm(params.merge({:logger => logger}))
 
-      @mrm.map              = map
-      @mrm.reduce           = reduce
-      @mrm.finalize         = finalize
+      logger.puts(@mrm.serializable_hash.inspect)
+      logger.puts("###############################")
+      logger.flush
 
-      map.code              = params.delete('map_code')
-      reduce.code           = params.delete('reduce_code')
-      finalize.code         = params.delete('finalize_code')
 
-      sorted_params = sort_params(params)
-
-      # rebuild mapreduce model
-      sorted_params.each do |k,v|
-        k =~ /(.+?)_(.+?)_(.*)/
-
-        case $1
-          when 'map'        then add(map, $2, v[:name], v[:function])
-          when 'reduce'     then add(reduce, $2, v[:name], v[:function])
-          when 'finalize'   then add(finalize, $2, v[:name], v[:function])
-          else raise Exception.new("#{$1} in #{k} is unknown")
-        end
-      end
 
       storage_collection = Marbu.storage_collection
       if( storage_collection )
@@ -99,13 +72,8 @@ module Marbu
     get "/mr" do
       storage_collection  = Marbu.storage_collection
       mrm_hsh             = storage_collection.find_one
-      mrm                 = Marbu::MapReduceModel.new(mrm_hsh)
+      mrm                 = Marbu::Models::MapReduceFinalize.new(mrm_hsh)
       builder             = Marbu::Builder.new(mrm)
-
-      logger.puts(builder.finalize)
-      logger.puts("###############################")
-      logger.flush
-
 
       @res = Marbu.collection.map_reduce(
                               builder.map,
@@ -119,32 +87,45 @@ module Marbu
       show 'mr'
     end
 
-    #### fuuu, rebuild mapreduce model from provided params hash
-    # wouldn't be necessary if I know HTML
-    def sort_params(params)
-      {}.tap do |sorted_params|
-        params.each_pair do |k,v|
-          # map parameters
-          k =~ /(.+?)_(.+?)_(.+?)_(.*)/
+    def build_mrm(params)
+      name                  = 'name'
+      function              = 'function'
+      
+      mrm                   = Marbu::Models::MapReduceFinalize.new(
+                                  :database           => params.delete('database'),
+                                  :base_collection    => params.delete('base_collection'),
+                                  :mr_collection      => params.delete('mr_collection')
+                              )
 
-          next if $1.nil?
+      map                   = Marbu::Models::Map.new(:code => params.delete('map_code'))
+      reduce                = Marbu::Models::Reduce.new(:code => params.delete('reduce_code'))
+      finalize              = Marbu::Models::Finalize.new(:code => params.delete('finalize_code'))
 
-          block       = $1
-          type        = $2
-          sub_type1    = $3
-          number      = $4
+      mrm.map               = map
+      mrm.reduce            = reduce
+      mrm.finalize          = finalize
 
-          next if sorted_params.key?("#{block}_#{type}_#{number}")
+      ['map', 'finalize'].each do |stage|
+        ['key', 'value'].each do |type|
+          stage_type_name      = "#{stage}_#{type}_#{name}"
+          stage_type_function  = "#{stage}_#{type}_#{function}"
 
-          sub_type2 = sub_type1.eql?("name") ? "function" : "name"
-          v2 = params["#{block}_#{type}_#{sub_type2}_#{number}"]
-          raise Exception.new("corresponding param not found") if v2.nil?
-
-          sorted_params["#{block}_#{type}_#{number}"] = {:name => v, :function => v2}
+          params[stage_type_name].each_with_index do |n, i|
+            case stage
+              when 'map'        then
+                add(map, type, n, params[stage_type_function][i])
+                # TODO: for now there is no difference between map and reduce emit-keys and emit-values. And most likely there shouldn't be one, but we'll see
+                add(reduce, type, n, params[stage_type_function][i])
+              when 'finalize'   then add(finalize, type, n, params[stage_type_function][i])
+              else raise Exception.new("#{stage} in #{k} is unknown")
+            end
+          end
         end
       end
-    end
 
+      return mrm
+    end
+    
     def add(model, type, name, function)
       case type
         when 'key'      then model.add_key(name, function)
@@ -153,19 +134,8 @@ module Marbu
       end
     end
 
-    #%w( builder ).each do |page|
-    #  get "/#{page}" do
-    #    show page
-    #  end
-    #
-    #  get "/#{page}/:id" do
-    #    show page
-    #  end
-    #end
-
     def show(page)
       haml page.to_sym
     end
   end
-
 end
