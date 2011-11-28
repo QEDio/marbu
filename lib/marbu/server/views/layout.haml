@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+%html(lang="en")
+  %head
+    %meta(charset="utf-8")
+    - if @description
+      %meta(name="description" content=@description)
+    - if @keywords
+      %meta(name="keywords" content=@keywords)
+    %title= @title
+    %script(src='/js/jquery-1.6.2.js')
+    %script(src='/js/builder.js')
+    %link(href='/css/style.css' rel='stylesheet' type='text/css')
+  %body
+    #container
+      = haml :header, :layout => false
+      = yield
+      = haml :footer, :layout => false
