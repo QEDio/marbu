@@ -54,8 +54,6 @@ module Marbu
       logger.puts("###############################")
       logger.flush
 
-
-
       storage_collection = Marbu.storage_collection
       if( storage_collection )
         storage_collection.insert(@mrm.serializable_hash)
