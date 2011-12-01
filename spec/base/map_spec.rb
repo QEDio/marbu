@@ -1,15 +1,21 @@
 require 'spec_helper'
 
 describe Marbu::Models::Map do
-  context "creating a MapModel with no parameters" do
+  context "when instantiated with empty parameters" do
     let(:map) do
       Marbu::Models::Map.new
     end
 
-    it "returns an empty arrays or nil for it's values" do
-      map.keys.should == []
-      map.values.should == []
-      map.code.should == nil
+    it "should have no keys" do
+      map.keys.should be_empty
+    end
+
+    it "should have no values" do
+      map.values.should be_empty
+    end
+
+    it "should have no code" do
+      map.code.should be_nil
     end
   end
 end

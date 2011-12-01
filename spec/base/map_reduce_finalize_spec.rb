@@ -42,35 +42,38 @@ describe Marbu::Models::MapReduceFinalize do
       :finalize             => FINALIZE_WWB_DIM0
   }
 
-  context "when creating with no options the model" do
+  context "when instantiated with no params" do
     let(:mrm) do
       Marbu::Models::MapReduceFinalize.new
     end
-
-    it "does return nil for map, reduce and finalize" do
-      mrm.map.should == nil
-      mrm.reduce == nil
-      mrm.finalize == nil
+    it "should return nil for map" do
+      mrm.map.should be_nil
+    end
+    it "should return nil for reduce" do
+      mrm.reduce.should be_nil
+    end
+    it "should return nil for finalize" do
+      mrm.finalize.should be_nil
     end
   end
 
-  context "when creating with a valid params hash it" do
+  context "when instantiated with a valid params hash" do
     let(:mrm) do
       Marbu::Models::MapReduceFinalize.new(MR_WWB_LOC_DIM0)
     end
 
-    it "creates correctly and produces that hash again" do
+    it "should return the serializable hash correctly" do
       mrm.serializable_hash.should == MR_WWB_LOC_DIM0
     end
   end
 
-  context "when adding a emit_key with no function it" do
+  context "when added an emit_key with no function" do
     let(:mrm) do
       Marbu::Models::MapReduceFinalize.new(MR_WWB_LOC_DIM0)
     end
 
-    it "creates the function automatically" do
-
+    it "should create the function automatically" do
+      pending
     end
   end
 end
