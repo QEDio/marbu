@@ -1,3 +1,8 @@
+body {
+  padding:  0;
+  margin:   0;
+}
+
 .clearfix:after {
 	content: ".";
 	display: block;
@@ -21,21 +26,23 @@ html[xmlns] .clearfix {
 
 
 
+
 /* builder */
 .builder .col {
-  float:  left;
-  width:  417px;
-  margin: 10px;
-  padding:10px;
+  display:  block;
 }
 
 .builder .row {
   display:  block;
-  margin:   0 0 10px 0;
+  margin:   0 0 15px 0;
+  border:   1px dotted #777;
+  position: relative;
 }
 
 .builder .row.submit {
   text-align: center;
+  padding:     20px 0 0 0;
+  border:       none;
 }
 
 .builder .col legend {
@@ -48,15 +55,25 @@ html[xmlns] .clearfix {
 }
 
 .builder .col .pair {
-  float:        left;
-  margin-right: 20px;
+/*  float:        left;*/
+/*  margin-right: 2%;*/
+/*  width:        45%;*/
+    margin: 0 auto 15px auto;
+    padding:  5px 10px 5px 5px;
 }
 
 .builder .col .pair:last-child {
   margin-right: 0;
+  margin-bottom:  0;
 }
 
-.builder .col input {
+
+/*.builder .col textarea, .builder .col .ui-btn {
+  width:        91%;
+}
+*/
+
+/*.builder .col input {
   width:    180px;
   display:  block;
 }
@@ -79,29 +96,32 @@ input:hover, textarea:hover {
 input:focus, textarea:focus {
   box-shadow: 0 0 5px #555;
   border-color: #000;
-}
+}*/
 
 .add-remove {
   clear:  both;
+  margin: 0 0 20px 0;
 }
 
-.add-remove a.add, .add-remove a.remove {
+/*.add-remove .add, .add-remove .remove {
   text-decoration:  none;
   display:          inline-block;
   position:         relative;
-}
+}*/
 
 .add-remove a.remove {
   background:       url('/images/remove.png') 0 0 no-repeat;
   width:            20px;
   height:           20px;
   padding:          0;
-  margin-left:      5px;
   text-indent:      -9999em;
-  top:              20px;
+  top:              5px;
+  right:            5px;
+  display:          block;
+  position:         absolute;
 }
 
-.add-remove a.add {
+/*.add-remove .add {
   margin:     0 0 20px 0;
   display:    block;
   text-align: center;
@@ -111,7 +131,7 @@ input:focus, textarea:focus {
 }
 
 
-.add-remove a.add:hover {
+.add-remove .add:hover {
   border-color: #000;
   color:        #000;
-}
+}*/

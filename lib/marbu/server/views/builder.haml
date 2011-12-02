@@ -1,40 +1,20 @@
-%form{:action => "builder", :method => "post", :class => 'builder', :data => {:remote => 'true'}}
-  %div.clearfix.builder
-    - [@map, @reduce, @finalize].each do |mr_step|
-      - type = mr_step[:type]
-      %fieldset.col
-        %legend=type.capitalize
-        - mr_step[:blocks].keys.each_with_index do |key, i|
-          - if not type.eql?('reduce')
-            %div.add-remove
-              %div.clearfix.row.add-remove-element
-                %div.pair
-                  %label{:for => "#{type}_key_#{i}"} Emit-Key:
-                  %input{:type =>  "text", :name => "#{type}_key_name[]", :class => "text", :value => key.name, :id => "#{type}_key_#{i}"}
-                %div.pair
-                  %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
-                  %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}
-        %div.add-remove
-          - mr_step[:blocks].values.each_with_index do |value, i|
-            - if not type.eql?('reduce')
-              %div.clearfix.row.add-remove-element
-                %div.pair
-                  %label{:for => "#{type}_value_#{i}"} Emit-Value:
-                  %input{:type =>  "text", :name => "#{type}_value_name[]", :class => "text", :value => value.name, :id => "#{type}_value_#{i}"}
-                %div.pair
-                  %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function:
-                  %input{:type =>  "text", :name => "#{type}_value_function[]", :class => "text", :value => value.function, :id => "#{type}_value_function_#{i}"}
-        %div.clearfix.row
-          %label{:for => "code"} Your Javascript-Code:
-          %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 50}= mr_step[:blocks].code
-
-        %div.clearfix.row
-          %label{:for => "code_#{type}"} MR-Code for #{mr_step[:type]}:
-          %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50, :readonly => 'readonly', :id => "code_#{type}"}= mr_step[:code]
-
+%form{:action => "builder", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+  %div.builder
+    %div{:id => 'builder', :data => {:role => 'page'}}
+      = haml :header, :layout => false
+      %div{:data => {:role => 'content'}}
+        %ul{:data => {:role => 'listview'}}
+          - [@map, @reduce, @finalize].each do |mr_step|
+            - type = mr_step[:type]
+            %li
+              %a{:href => '#' + type, :data => {:transition => 'slide'}}=type.capitalize
         %div.row.submit
           %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
 
+      = haml :footer, :layout => false
+
+    - [@map, @reduce, @finalize].each do |mr_step|
+      = haml :builder_col, :layout => false, :locals => {:mr_step => mr_step}
 
   %input{:type => 'hidden', :name => 'database',          :value => @mrm.database}
   %input{:type => 'hidden', :name => 'base_collection',   :value => @mrm.base_collection}

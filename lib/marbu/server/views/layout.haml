@@ -6,12 +6,13 @@
       %meta(name="description" content=@description)
     - if @keywords
       %meta(name="keywords" content=@keywords)
+    %meta(name='viewport' content='width=device-width, initial-scale=1')
     %title= @title
-    %script(src='/js/jquery-1.6.2.js')
+    %script(src='http://code.jquery.com/jquery-1.6.4.min.js')
+    %script(src='http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js')
     %script(src='/js/builder.js')
     %link(href='/css/style.css' rel='stylesheet' type='text/css')
+    %link(href='http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css' rel='stylesheet' type='text/css')
   %body
     #container
-      = haml :header, :layout => false
       = yield
-      = haml :footer, :layout => false

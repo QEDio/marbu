@@ -1,0 +1,36 @@
+- type = mr_step[:type]
+%div.col{:id => type, :data => {:role => 'page'}}
+  = haml :header, :layout => false, :locals => {:text => type.capitalize}
+  - mr_step[:blocks].keys.each_with_index do |key, i|
+    %div{:data => {:role => 'content'}}
+      - if not type.eql?('reduce')
+        %div.add-remove
+          %div.clearfix.row.add-remove-element
+            %div.pair
+              %label{:for => "#{type}_key_#{i}"} Emit-Key:
+              %input{:type =>  "text", :name => "#{type}_key_name[]", :class => "text", :value => key.name, :id => "#{type}_key_#{i}"}
+            %div.pair
+              %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
+              %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}
+      %div.add-remove
+        - mr_step[:blocks].values.each_with_index do |value, i|
+          - if not type.eql?('reduce')
+            %div.clearfix.row.add-remove-element
+              %div.pair
+                %label{:for => "#{type}_value_#{i}"} Emit-Value:
+                %input{:type =>  "text", :name => "#{type}_value_name[]", :class => "text", :value => value.name, :id => "#{type}_value_#{i}"}
+              %div.pair
+                %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function:
+                %input{:type =>  "text", :name => "#{type}_value_function[]", :class => "text", :value => value.function, :id => "#{type}_value_function_#{i}"}
+      %div.clearfix.row
+        %label{:for => "code"} Your Javascript-Code:
+        %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 50}= mr_step[:blocks].code
+
+      %div.clearfix.row
+        %label{:for => "code_#{type}"} MR-Code for #{mr_step[:type]}:
+        %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50, :readonly => 'readonly', :id => "code_#{type}"}= mr_step[:code]
+
+      %div.row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
+
+  = haml :footer, :layout => false
