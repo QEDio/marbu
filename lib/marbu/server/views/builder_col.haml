@@ -3,8 +3,9 @@
   = haml :header, :layout => false, :locals => {:text => type.capitalize}
   - mr_step[:blocks].keys.each_with_index do |key, i|
     %div{:data => {:role => 'content'}}
+      %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Keys/Emit-Key-Functions
       - if not type.eql?('reduce')
-        %div.add-remove
+        %div.add-remove.pulldown
           %div.clearfix.row.add-remove-element
             %div.pair
               %label{:for => "#{type}_key_#{i}"} Emit-Key:
@@ -12,7 +13,9 @@
             %div.pair
               %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
               %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}
-      %div.add-remove
+
+      %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Values/Emit-Functions
+      %div.add-remove.pulldown
         - mr_step[:blocks].values.each_with_index do |value, i|
           - if not type.eql?('reduce')
             %div.clearfix.row.add-remove-element
@@ -22,11 +25,14 @@
               %div.pair
                 %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function:
                 %input{:type =>  "text", :name => "#{type}_value_function[]", :class => "text", :value => value.function, :id => "#{type}_value_function_#{i}"}
-      %div.clearfix.row
+
+      %a{:data => {:role => 'button', :type => 'pulldown'}} Your Javascript-Code
+      %div.clearfix.row.pulldown
         %label{:for => "code"} Your Javascript-Code:
         %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 50}= mr_step[:blocks].code
 
-      %div.clearfix.row
+      %a{:data => {:role => 'button', :type => 'pulldown'}} MR-Code for #{mr_step[:type]}
+      %div.clearfix.row.pulldown
         %label{:for => "code_#{type}"} MR-Code for #{mr_step[:type]}:
         %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50, :readonly => 'readonly', :id => "code_#{type}"}= mr_step[:code]
 

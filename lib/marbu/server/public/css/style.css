@@ -37,12 +37,16 @@ html[xmlns] .clearfix {
   margin:   0 0 15px 0;
   border:   1px dotted #777;
   position: relative;
+  background: #ddd;
+  border-radius:  10px;
 }
 
 .builder .row.submit {
   text-align: center;
   padding:     20px 0 0 0;
   border:       none;
+  border-radius:  0;
+  background:   none;
 }
 
 .builder .col legend {
@@ -119,6 +123,14 @@ input:focus, textarea:focus {
   right:            5px;
   display:          block;
   position:         absolute;
+}
+
+#container .pulldown {
+  margin:   0 0 40px 0;
+}
+
+a[data-type="pulldown"] {
+  text-align: left;
 }
 
 /*.add-remove .add {
