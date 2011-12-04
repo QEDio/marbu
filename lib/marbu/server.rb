@@ -33,11 +33,20 @@ module Marbu
       show 'root'
     end
 
+    get "/builder/new" do
+      @mrf        = Marbu::Models::Db::MongoDb.new
+      @mrm        = Marbu::Models::MapReduceFinalize.new
+      @mrf.map_reduce_finalize = @mrm
+      @builder    = Marbu::Builder.new(@mrm)
+      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
+      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
+      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+
+      show 'builder'
+    end
+    
     get "/builder/:uuid" do
-      logger.puts("uuid: #{params['uuid']}")
-      logger.flush
-      
-      @mrf = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrf        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrm        = @mrf.map_reduce_finalize
       @builder    = Marbu::Builder.new(@mrm)
       @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
@@ -60,10 +69,6 @@ module Marbu
       show 'builder'
     end
 
-    put "/builder" do
-      
-    end
-
     get "/result/:uuid" do
       mrf                 = Marbu::Models::Db::MongoDb.find(uuid: params['uuid'])
       mrm                 = mrf.map_reduce_finalize
@@ -82,7 +87,8 @@ module Marbu
     end
 
     def get_mrf(params)
-      uuid  = params.delete('uuid') || UUID.new.generate(:compact)
+      uuid  = params.delete('uuid')
+      raise Exception.new("No uuid!") if uuid.blank?
       mrf   = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
 
       name                  = 'name'
@@ -104,17 +110,20 @@ module Marbu
 
       ['map', 'finalize'].each do |stage|
         ['key', 'value'].each do |type|
-          stage_type_name      = "#{stage}_#{type}_#{name}"
-          stage_type_function  = "#{stage}_#{type}_#{function}"
+          stage_type_name       = "#{stage}_#{type}_#{name}"
+          stage_type_function   = "#{stage}_#{type}_#{function}"
+          stage_type_name       = params[stage_type_name]
 
-          params[stage_type_name].each_with_index do |n, i|
-            case stage
-              when 'map'        then
-                add(map, type, n, params[stage_type_function][i])
-                # TODO: for now there is no difference between map and reduce emit-keys and emit-values. And most likely there shouldn't be one, but we'll see
-                add(reduce, type, n, params[stage_type_function][i])
-              when 'finalize'   then add(finalize, type, n, params[stage_type_function][i])
-              else raise Exception.new("#{stage} in #{k} is unknown")
+          if( stage_type_name.present? )
+            stage_type_function.each_with_index do |n, i|
+              case stage
+                when 'map'        then
+                  add(map, type, n, params[stage_type_function][i])
+                  # TODO: for now there is no difference between map and reduce emit-keys and emit-values. And most likely there shouldn't be one, but we'll see
+                  add(reduce, type, n, params[stage_type_function][i])
+                when 'finalize'   then add(finalize, type, n, params[stage_type_function][i])
+                else raise Exception.new("#{stage} in #{k} is unknown")
+              end
             end
           end
         end
