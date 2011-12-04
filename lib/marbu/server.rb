@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'haml'
 require 'time'
 require 'marbu'
+require 'uuid'
 
 module Marbu
   class Server < Sinatra::Base
@@ -26,39 +27,18 @@ module Marbu
       end
     end
 
-    get('/') { redirect '/builder' }
-    
-    # to make things easier on ourselves
-    get "/builder" do
-      storage_collection = Marbu.storage_collection
-
-      if storage_collection
-        mrm_hsh   = storage_collection.find_one || MR_MONGODB_EXAMPLE
-      else
-        mrm_hsh   = MR_MONGODB_EXAMPLE
-      end
-
-      @mrm        = Marbu::Models::MapReduceFinalize.new(mrm_hsh)
-      @builder    = Marbu::Builder.new(@mrm)
-      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
-      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
-      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
-
-      show 'builder'
+    # stored map reduce finalize objects
+    get "/" do
+      @mrfs = Marbu::Models::Db::MongoDb.all
+      show 'root'
     end
 
-    post "/builder" do
-      @mrm                  = build_mrm(params.merge({:logger => logger}))
-
-      logger.puts(@mrm.serializable_hash.inspect)
-      logger.puts("###############################")
+    get "/builder/:uuid" do
+      logger.puts("uuid: #{params['uuid']}")
       logger.flush
-
-      storage_collection = Marbu.storage_collection
-      if( storage_collection )
-        storage_collection.insert(@mrm.serializable_hash)
-      end
-
+      
+      @mrf = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrm        = @mrf.map_reduce_finalize
       @builder    = Marbu::Builder.new(@mrm)
       @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
       @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
@@ -67,10 +47,26 @@ module Marbu
       show 'builder'
     end
 
-    get "/mr" do
-      storage_collection  = Marbu.storage_collection
-      mrm_hsh             = storage_collection.find_one
-      mrm                 = Marbu::Models::MapReduceFinalize.new(mrm_hsh)
+    post "/builder/:uuid" do
+      @mrf                  = get_mrf(params)
+      @mrf.save!
+
+      @mrm        = @mrf.map_reduce_finalize
+      @builder    = Marbu::Builder.new(@mrm)
+      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
+      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
+      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+
+      show 'builder'
+    end
+
+    put "/builder" do
+      
+    end
+
+    get "/result/:uuid" do
+      mrf                 = Marbu::Models::Db::MongoDb.find(uuid: params['uuid'])
+      mrm                 = mrf.map_reduce_finalize
       builder             = Marbu::Builder.new(mrm)
 
       @res = Marbu.collection.map_reduce(
@@ -85,7 +81,10 @@ module Marbu
       show 'mr'
     end
 
-    def build_mrm(params)
+    def get_mrf(params)
+      uuid  = params.delete('uuid') || UUID.new.generate(:compact)
+      mrf   = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
+
       name                  = 'name'
       function              = 'function'
       
@@ -121,7 +120,10 @@ module Marbu
         end
       end
 
-      return mrm
+      mrf.map_reduce_finalize   = mrm
+      mrf.name                  = (params.delete('name') || mrf.name) || "NoName"
+
+      return mrf
     end
     
     def add(model, type, name, function)

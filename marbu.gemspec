@@ -24,6 +24,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sinatra'
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'mongo'
+  s.add_runtime_dependency 'bson_ext'
+  s.add_runtime_dependency 'uuid'
 
   s.add_development_dependency 'turn'
   s.add_development_dependency 'rspec'

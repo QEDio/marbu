@@ -1,0 +1,13 @@
+%form{:action => "builder", :method => "get", :class => 'builder', :data => {:transition => 'none'}}
+  %div.builder
+    %div{:id => 'builder', :data => {:role => 'page'}}
+      = haml :header, :layout => false
+      %div{:data => {:role => 'content'}}
+        %ul{:data => {:role => 'listview'}}
+          - @mrfs.each do |mrf|
+            - uuid = mrf.uuid
+            - name = mrf.name
+            %li
+              %a{:href => 'builder/' + uuid, :data => {:transition => 'slide'}}=name.capitalize
+
+      = haml :footer, :layout => false    

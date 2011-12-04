@@ -1,0 +1,1 @@
+require 'marbu/models/db/mongodb'

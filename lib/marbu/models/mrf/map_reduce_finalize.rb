@@ -1,14 +1,25 @@
+require 'mongoid'
+
 module Marbu
   module Models
     # represents one complete MapReduce-Model
     # this model can be stored in a database and read again
     # the builder will use MapReduce-Models to build actual mapreduce code
     class MapReduceFinalize
+      include Mongoid::Fields::Serializable
       attr_accessor :map, :reduce, :finalize, :query, :force_query, :database, :base_collection
       attr_accessor :mr_collection
       VALUE = :value
       VALUE_STR = VALUE.to_s
       DOCUMENT_OFFSET = VALUE.to_s + "."
+
+      def serialize(object)
+        object.serializable_hash
+      end
+
+      def deserialize(object)
+        MapReduceFinalize.new(object)
+      end
 
       def initialize(params = nil)
         @map = nil

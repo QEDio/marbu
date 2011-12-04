@@ -1,0 +1,5 @@
+require 'marbu/models/mrf/base'
+require 'marbu/models/mrf/map'
+require 'marbu/models/mrf/reduce'
+require 'marbu/models/mrf/finalize'
+require 'marbu/models/mrf/map_reduce_finalize'

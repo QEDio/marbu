@@ -7,7 +7,7 @@
           - [@map, @reduce, @finalize].each do |mr_step|
             - type = mr_step[:type]
             %li
-              %a{:href => '#' + type, :data => {:transition => 'slide'}}=type.capitalize
+              %a{:href => '/#' + type, :data => {:transition => 'slide'}}=type.capitalize
         %div.row.submit
           %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
 
