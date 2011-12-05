@@ -1,10 +1,17 @@
 %div{:id => 'builder', :data => {:role => 'page'}}
   = haml :header, :layout => false
   %div{:data => {:role => 'content'}}
-    %ul{:data => {:role => 'listview'}}
-      - [@map, @reduce, @finalize].each do |mr_step|
-        - type = mr_step[:type]
-        %li
-          %a{:href => '/builder/col/' + type, :data => {:transition => 'slide'}}=type.capitalize
+    %form{:action => @mrf.uuid, :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+      %div.row
+        %label{:for => "name"} Name:
+        %input{:type =>  "text", :name => "name", :class => "text", :value => @mrf.name, :id => "name"}
 
-      = haml :footer, :layout => false
+      %ul{:data => {:role => 'listview'}}
+        - [@map, @reduce, @finalize].each do |mr_step|
+          - type = mr_step[:type]
+          %li
+            %a{:href => "/builder/#{@mrf.uuid}/" + type, :data => {:transition => 'slide'}}=type.capitalize
+      %div.row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
+
+  = haml :footer, :layout => false

@@ -69,7 +69,7 @@ module Marbu
       def serializable_hash
         {
           :mapreduce_keys             => @map.serializable_hash[:keys],
-          :mapreduce_values           => @reduce.serializable_hash[:values],
+          :mapreduce_values           => @map.serializable_hash[:values],
           :finalize_values            => @finalize.serializable_hash[:values],
           :database                   => @database,
           :base_collection            => @base_collection,

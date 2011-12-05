@@ -3,7 +3,7 @@
   = haml :header, :layout => false, :locals => {:text => type.capitalize}
   - @mr_step[:blocks].keys.each_with_index do |key, i|
     %div{:data => {:role => 'content'}}
-      %form{:action => "builder", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+      %form{:action => "/builder/#{@mrf.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
         %div.builder
           %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Keys/Emit-Key-Functions
           - if not type.eql?('reduce')

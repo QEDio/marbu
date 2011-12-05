@@ -1,4 +1,5 @@
 require 'mongoid'
+require 'uuid'
 
 module Marbu
   module Models
@@ -7,8 +8,8 @@ module Marbu
         include Mongoid::Document
         store_in :marbu
 
-        field :uuid,                  type: String
-        field :name,                  type: String
+        field :uuid,                  type: String, :default => lambda{||UUID.new.generate(:compact)}
+        field :name,                  type: String, :default => "NoName00"
         field :map_reduce_finalize,   type: MapReduceFinalize
       end
     end

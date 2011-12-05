@@ -4,7 +4,7 @@ module Marbu
       attr_accessor :keys, :values
       attr_accessor :code
 
-      def initialize(ext_options = nil)
+      def initialize(ext_options = {})
         @keys           = []
         @values         = []
         @code           = nil
@@ -31,6 +31,14 @@ module Marbu
 
       def add_value(name, function = nil)
         add(:value, name, function)
+      end
+
+      def present?
+        @keys.present?
+      end
+
+      def blank?
+        !present?
       end
 
       private
@@ -62,6 +70,14 @@ module Marbu
             :name       => @name,
             :function   => @function
         }.keep_if{|k,v| v}
+      end
+
+      def present?
+        name.present? && function.present?
+      end
+
+      def blank?
+        !present?
       end
     end
 
