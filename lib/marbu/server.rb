@@ -44,7 +44,23 @@ module Marbu
 
       show 'builder'
     end
-    
+
+    get "/builder/col/:type" do
+      @mrf        = Marbu::Models::Db::MongoDb.new
+      @mrm        = Marbu::Models::MapReduceFinalize.new
+      @mrf.map_reduce_finalize = @mrm
+      @builder    = Marbu::Builder.new(@mrm)
+      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
+      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
+      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+
+
+      @cols       = {'map' => @map, 'reduce' => @reduce, 'finalize' => @finalize}
+      @mr_step    = @cols[params[:type]]
+
+      haml :builder_col
+    end
+
     get "/builder/:uuid" do
       @mrf        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrm        = @mrf.map_reduce_finalize
@@ -93,7 +109,7 @@ module Marbu
 
       name                  = 'name'
       function              = 'function'
-      
+
       mrm                   = Marbu::Models::MapReduceFinalize.new(
                                   :database           => params.delete('database'),
                                   :base_collection    => params.delete('base_collection'),
@@ -134,7 +150,7 @@ module Marbu
 
       return mrf
     end
-    
+
     def add(model, type, name, function)
       case type
         when 'key'      then model.add_key(name, function)

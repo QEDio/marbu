@@ -1,21 +1,10 @@
-%form{:action => "builder", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
-  %div.builder
-    %div{:id => 'builder', :data => {:role => 'page'}}
-      = haml :header, :layout => false
-      %div{:data => {:role => 'content'}}
-        %ul{:data => {:role => 'listview'}}
-          - [@map, @reduce, @finalize].each do |mr_step|
-            - type = mr_step[:type]
-            %li
-              %a{:href => '/#' + type, :data => {:transition => 'slide'}}=type.capitalize
-        %div.row.submit
-          %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
+%div{:id => 'builder', :data => {:role => 'page'}}
+  = haml :header, :layout => false
+  %div{:data => {:role => 'content'}}
+    %ul{:data => {:role => 'listview'}}
+      - [@map, @reduce, @finalize].each do |mr_step|
+        - type = mr_step[:type]
+        %li
+          %a{:href => '/builder/col/' + type, :data => {:transition => 'slide'}}=type.capitalize
 
       = haml :footer, :layout => false
-
-    - [@map, @reduce, @finalize].each do |mr_step|
-      = haml :builder_col, :layout => false, :locals => {:mr_step => mr_step}
-
-  %input{:type => 'hidden', :name => 'database',          :value => @mrm.database}
-  %input{:type => 'hidden', :name => 'base_collection',   :value => @mrm.base_collection}
-  %input{:type => 'hidden', :name => 'mr_collection',     :value => @mrm.mr_collection}
