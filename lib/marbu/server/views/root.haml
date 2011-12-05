@@ -4,6 +4,7 @@
       = haml :header, :layout => false
       %div{:data => {:role => 'content'}}
         %ul{:data => {:role => 'listview'}}
+          %a{:href => 'builder/new', :data => {:transition => 'slide'}}= "new"
           - @mrfs.each do |mrf|
             - uuid = mrf.uuid
             - name = mrf.name

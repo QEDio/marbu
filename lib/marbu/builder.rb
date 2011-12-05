@@ -18,7 +18,6 @@ module Marbu
     end
 
     def map
-      raise Marbu::Exceptions::NoEmitKeys if @map_reduce_model.map.keys.size == 0
       @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map))
     end
 

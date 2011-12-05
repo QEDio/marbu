@@ -64,8 +64,6 @@ module Marbu
         end
 
         def self.emit_keys(keys)
-          raise Exceptions::NoEmitKeys.new if keys.size == 0
-          
           emit_core(keys)
         end
 

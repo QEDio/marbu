@@ -22,9 +22,9 @@ module Marbu
       end
 
       def initialize(params = nil)
-        @map = nil
-        @reduce = nil
-        @finalize = nil
+        @map = Map.new
+        @reduce = Reduce.new
+        @finalize = Finalize.new
         @query = nil
         @force_query  = false
         @database = nil
