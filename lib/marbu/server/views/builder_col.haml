@@ -1,6 +1,6 @@
 - type = @mr_step[:type]
 %div.col{:id => type, :data => {:role => 'page'}}
-  = haml :header, :layout => false, :locals => {:text => type.capitalize}
+  = haml :header_col, :layout => false, :locals => {:text => type.capitalize}
   - @mr_step[:blocks].keys.each_with_index do |key, i|
     %div{:data => {:role => 'content'}}
       %form{:action => "/builder/#{@mrf.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
@@ -44,4 +44,4 @@
           %input{:type => 'hidden', :name => 'database',          :value => @mrm.database}
           %input{:type => 'hidden', :name => 'base_collection',   :value => @mrm.base_collection}
           %input{:type => 'hidden', :name => 'mr_collection',     :value => @mrm.mr_collection}
-  = haml :footer, :layout => false
+  = haml :footer_col, :layout => false

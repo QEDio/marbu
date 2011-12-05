@@ -1,0 +1,13 @@
+%div.footer{:data=>{:position=>'fixed', :role=>'footer'}}
+  %div.footer_navbar{:data=>{:role=>'navbar', :position =>'fixed'}}
+    %ul
+      %li
+        %a{:href => "/builder/#{@mrf.uuid}", :data => {:transition => 'slide'}}= 'back'
+      %li
+        %a{:href => "/builder/#{@mrf.uuid}/map", :data => {:transition => 'slide'}}= 'map'
+      %li
+        %a{:href => "/builder/#{@mrf.uuid}/reduce", :data => {:transition => 'slide'}}= 'reduce'
+      %li
+        %a{:href => "/builder/#{@mrf.uuid}/finalize", :data => {:transition => 'slide'}}= 'finalize'
+      %li
+        %a{:href => "/mapreduce/#{@mrf.uuid}", :data => {:transition => 'slide'}}= 'mapreduce'

@@ -1,31 +1,21 @@
 %div{:id => 'builder', :data => {:role => 'page'}}
-  = haml :header, :layout => false
+  = haml :header, :layout => false, :locals => {:text => @mrf.name}
   %div{:data => {:role => 'content'}}
     %form{:action => @mrf.uuid, :method => "post", :class => 'builder', :data => {:transition => 'none'}}
-      %div.row
-        %label{:for => "name"} Name:
-        %input{:type =>  "text", :name => "name", :class => "text", :value => @mrf.name, :id => "name"}
-
-        %label{:for => "database"} Database:mr_collection
-        %input{:type =>  "text", :name => "database", :class => "text", :value => @mrm.database, :id => "database"}
-
-        %label{:for => "base_collection"} Base Collection:
-        %input{:type =>  "text", :name => "base_collection", :class => "text", :value => @mrm.base_collection, :id => "base_collection"}
-
-        %label{:for => "mr_collection"} Mr Collection:
-        %input{:type =>  "text", :name => "mr_collection", :class => "text", :value => @mrm.mr_collection, :id => "mr_collection"}
-
       %ul{:data => {:role => 'listview'}}
         - [@map, @reduce, @finalize].each do |mr_step|
           - type = mr_step[:type]
           %li
             %a{:href => "/builder/#{@mrf.uuid}/" + type, :data => {:transition => 'slide'}}=type.capitalize
+        %li
+          %a{:href => "/builder/#{@mrf.uuid}/misc", :data => {:transition => 'slide'}}='Misc'
       %div.row.submit.save_and_back
         %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
+        %a{:href => "/mapreduce/#{@mrf.uuid}", :data => {:transition => 'slide', :role => 'button'}}= 'Execute'
 
   %div{:data => {:role => 'content'}}
     %form{:action => @mrf.uuid, :method => "delete", :class => 'builder', :data => {:transition => 'none'}}
       %input{:type => "submit", :value => "Delete"}
-    %a{:href => "/mapreduce/#{@mrf.uuid}", :data => {:transition => 'slide'}}= 'Execute'
+
        
   = haml :footer, :layout => false

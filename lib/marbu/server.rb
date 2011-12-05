@@ -81,7 +81,13 @@ module Marbu
       @cols       = {'map' => @map, 'reduce' => @reduce, 'finalize' => @finalize}
       @mr_step    = @cols[params[:type]]
 
-      haml :builder_col
+      logger.puts(params['type'])
+      logger.flush
+      if(params['type'].eql?('misc'))
+        haml :builder_misc
+      else
+        haml :builder_col
+      end
     end
 
     get "/builder/:uuid" do
