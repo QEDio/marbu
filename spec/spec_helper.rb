@@ -50,6 +50,7 @@ require 'marbu'
 require 'rspec'
 require 'simplecov'
 require 'factory_girl'
+require 'constants'
 FactoryGirl.find_definitions
 
 SimpleCov.start

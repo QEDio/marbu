@@ -10,9 +10,9 @@ module Marbu
       elsif mrm.is_a?(Hash)
         @map_reduce_model = Marbu::Models::MapReduceFinalize.new(mrm)
       else
-        raise Exception.new("Parameter mrm was neither of type MapReduceModel nor Hash, but #{mrm.class}. Aborting")
+        raise Exception.new("Parameter mrm was neither of type MapReduceFinalize nor Hash, but #{mrm.class}. Aborting")
       end
-      
+
       @builder_clasz    = options[:builder] || Marbu::Builder::Mongodb
       @formatter_clasz  = options[:formatter] || Marbu::Formatter::Dummy
     end
