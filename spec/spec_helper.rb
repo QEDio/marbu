@@ -1,3 +1,8 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
 require 'rubygems'
 require 'spork'
 
@@ -48,12 +53,9 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'marbu'
 require 'rspec'
-require 'simplecov'
 require 'factory_girl'
 require 'constants'
 FactoryGirl.find_definitions
-
-SimpleCov.start
 
 RSpec.configure do |config|
   config.include Factory::Syntax::Methods
