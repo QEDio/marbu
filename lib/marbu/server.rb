@@ -33,37 +33,8 @@ module Marbu
       show 'root'
     end
 
-    delete "/builder/:uuid" do
-      @mrf = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-
-      logger.puts @mrf.inspect
-      logger.flush
-      
-      @mrf.destroy if( @mrf.present? )
-
-
-      redirect "/"
-    end
-
     get "/builder/new" do
       @mrf              = Marbu::Models::Db::MongoDb.new
-      mrm               = Marbu::Models::MapReduceFinalize.new(
-                            :database           => 'database',
-                            :base_collection    => 'base_collection',
-                            :mr_collection      => 'mr_collection'
-                        )
-
-
-      map               = Marbu::Models::Map.new(:keys => [{:name => "map_key1"}], :values => [{:name => "map_value1"}])
-      reduce            = Marbu::Models::Reduce.new
-      finalize          = Marbu::Models::Finalize.new(:values => [{:name => "finalize"}])
-
-      mrm.map           = map
-      mrm.reduce        = reduce
-      mrm.finalize      = finalize
-
-      @mrf.map_reduce_finalize = mrm
-
       @mrf.save!
 
       redirect "builder/#{@mrf.uuid}"
@@ -77,12 +48,9 @@ module Marbu
       @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
       @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
 
-
       @cols       = {'map' => @map, 'reduce' => @reduce, 'finalize' => @finalize}
       @mr_step    = @cols[params[:type]]
 
-      logger.puts(params['type'])
-      logger.flush
       if(params['type'].eql?('misc'))
         haml :builder_misc
       else
@@ -102,7 +70,7 @@ module Marbu
     end
 
     post "/builder/:uuid" do
-      @mrf                  = get_mrf(params.merge({:logger => logger}))
+      @mrf                  = build_mrf_from_params(params.merge({:logger => logger}))
       @mrf.save!
 
       @mrm        = @mrf.map_reduce_finalize
@@ -114,43 +82,66 @@ module Marbu
       show 'builder'
     end
 
+    delete "/builder/:uuid" do
+      @mrf = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrf.destroy if( @mrf.present? )
+
+      redirect "/"
+    end
+
     get "/mapreduce/:uuid" do
       @mrf         = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @builder     = Marbu::Builder.new(@mrf.map_reduce_finalize)
       @error      = nil
 
       begin
+        # TODO: naturally this has to take the DATABASE and COLLECTION from the mapreducefilter object
+        # TODO: don;t take the parameters from the mapreducefilter object if DATABASE or DATABASE and COLLECTION are
+        # TODo: defined in the configuration (security)
         @res = Marbu.collection.map_reduce( @builder.map, @builder.reduce,
           {
             :query  => @builder.query,
-            :out    => {:replace => "tmp."+@mrf.map_reduce_finalize.mr_collection}#,
+            :out    => {:replace => "tmp."+@mrf.map_reduce_finalize.misc.output_collection}#,
             #:finalize => builder.finalize
           }
         )
       rescue Mongo::OperationFailure => e
-        @error = Marbu::Models::Db::MongoDbException.explain(e)
+        @error = Marbu::Models::Db::MongoDb::Exception.explain(e)
       end
       
       show 'mapreduce'
     end
 
-    def get_mrf(params)
-      name                  = 'name'
-      function              = 'function'
+    def build_mrf_from_params(params)
+      raise Exception.new("No uuid!") if params['uuid'].blank?
 
-      uuid  = params.delete('uuid')
-      raise Exception.new("No uuid!") if uuid.blank?
+      name                      = 'name'
+      function                  = 'function'
 
-      mrf   = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
-      mrm                   = mrf.map_reduce_finalize
+      uuid                      = params['uuid']
+      mrf                       = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
+      mrm                       = mrf.map_reduce_finalize
 
-      map_new                   = Marbu::Models::Map.new(:code => params.delete('map_code'))
-      reduce_new                = Marbu::Models::Reduce.new(:code => params.delete('reduce_code'))
-      finalize_new              = Marbu::Models::Finalize.new(:code => params.delete('finalize_code'))
+      map_new                   = Marbu::Models::Map.new(
+                                      :code => {:text => params['map_code']}
+                                    )
+      reduce_new                = Marbu::Models::Reduce.new(
+                                      :code => {:text => params['reduce_code']}
+                                    )
+      finalize_new              = Marbu::Models::Finalize.new(
+                                      :code => {:text => params['finalize_code']}
+                                    )
+      query_new                 = Marbu::Models::Query.new(
+                                        :condition    => params['query_condition'],
+                                        :force_query  => params['query_force_query']
+                                    )
+      misc_new                  = Marbu::Models::Misc.new(
+                                        :database           => params['database'],
+                                        :input_collection   => params['input_collection'],
+                                        :output_collection  => params['output_collection']
+                                    )
 
-      params[:logger].puts(params.inspect)
-      params[:logger].flush
-
+      # add params to map_new, reduce_new, finalize_new
       ['map', 'finalize'].each do |stage|
         ['key', 'value'].each do |type|
           stage_type_name       = params["#{stage}_#{type}_#{name}"]
@@ -163,7 +154,7 @@ module Marbu
                   add(map_new, type, n, stage_type_function[i])
                   # TODO: for now there is no difference between map and reduce emit-keys and emit-values. And most likely there shouldn't be one, but we'll see
                   add(reduce_new, type, n, stage_type_function[i])
-                when 'finalize'   then add(finalize, type, n, stage_type_function[i])
+                when 'finalize'   then add(finalize_new, type, n, stage_type_function[i])
                 else raise Exception.new("#{stage} in #{k} is unknown")
               end
             end
@@ -171,13 +162,17 @@ module Marbu
         end
       end
 
-      mrm.map               = map_new if( map_new.present? )
-      mrm.reduce            = reduce_new if( reduce_new.present? )
-      mrm.finalize          = finalize_new if( finalize_new.present? )
+      mrm.map               = map_new if map_new.present?
 
-      mrm.database          = params['database'] if params['database'].present?
-      mrm.mr_collection     = params['mr_collection'] if params['mr_collection'].present?
-      mrm.base_collection   = params['base_collection'] if params['base_collection'].present?
+      reduce_new.keys       = mrm.map.keys
+      reduce_new.values     = mrm.map.values
+      mrm.reduce            = reduce_new if reduce_new.present?
+
+      finalize_new.keys     = mrm.map.keys
+      mrm.finalize          = finalize_new if finalize_new.present?
+
+      mrm.query             = query_new if query_new.present?
+      mrm.misc              = misc_new if misc_new.present?
 
       mrf.map_reduce_finalize   = mrm
       mrf.name                  = params['name'] if params['name'].present?

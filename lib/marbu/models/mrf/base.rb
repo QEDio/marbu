@@ -2,27 +2,41 @@ module Marbu
   module Models
     class Base
       attr_accessor :keys, :values
-      attr_accessor :code
+      attr_reader :code
 
       def initialize(ext_options = {})
-        @keys           = []
-        @values         = []
-        @code           = nil
+        # keep_if weeds out nil arguments
+        options         = default_options.merge( ext_options.keep_if{|k,v| v} )
+        
+        @keys           = options[:keys].map{ |k| Key.new(k) }
+        @values         = options[:values].map{ |v| Value.new(v) }
+        self.code       = options[:code]
+      end
 
-        if ext_options
-          int_options     = ext_options
-          @keys           = int_options[:keys].map{|k| Key.new(k) } if int_options[:keys]
-          @values         = int_options[:values].map{|v| Value.new(v) } if int_options[:values]
-          @code           = int_options[:code]
+      def default_options
+        {
+          :keys             => [],
+          :values           => [],
+          :code             => Code.new
+        }
+      end
+
+      def code=(code)
+        if( code.is_a?(Code) )
+          @code = code
+        elsif( code.is_a?(Hash) )
+          @code = Code.new(code)
+        else
+          raise Exception.new("Don't know this Code type: #{code.class}")
         end
       end
 
       def serializable_hash
         {
-          :keys       => @keys.collect(&:serializable_hash),
-          :values     => @values.collect(&:serializable_hash),
-          :code       => @code
-        }
+          :keys       => keys.collect(&:serializable_hash),
+          :values     => values.collect(&:serializable_hash),
+          :code       => code.serializable_hash
+        }.delete_if{|k,v|v.blank?}
       end
 
       def add_key(name, function = nil)
@@ -34,7 +48,7 @@ module Marbu
       end
 
       def present?
-        @keys.present?
+        @keys.present? || code.present?
       end
 
       def blank?
@@ -43,7 +57,7 @@ module Marbu
 
       private
         def add(type, name, function)
-          function = MapReduceFinalize::VALUE_STR + '.' + name.to_s unless function
+          function = Misc::DOCUMENT_OFFSET + name.to_s unless function
           case type
             when :key     then @keys << Key.new({:name => name, :function => function})
             when :value   then @values << Value.new({:name => name, :function => function})

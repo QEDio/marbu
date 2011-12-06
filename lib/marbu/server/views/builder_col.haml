@@ -1,47 +1,12 @@
 - type = @mr_step[:type]
 %div.col{:id => type, :data => {:role => 'page'}}
-  = haml :header_col, :layout => false, :locals => {:text => type.capitalize}
-  - @mr_step[:blocks].keys.each_with_index do |key, i|
-    %div{:data => {:role => 'content'}}
-      %form{:action => "/builder/#{@mrf.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
-        %div.builder
-          %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Keys/Emit-Key-Functions
-          - if not type.eql?('reduce')
-            %div.add-remove.pulldown
-              %div.clearfix.row.add-remove-element
-                %div.pair
-                  %label{:for => "#{type}_key_#{i}"} Emit-Key:
-                  %input{:type =>  "text", :name => "#{type}_key_name[]", :class => "text", :value => key.name, :id => "#{type}_key_#{i}"}
-                %div.pair
-                  %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
-                  %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}
-
-          %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Values/Emit-Functions
-          %div.add-remove.pulldown
-            - @mr_step[:blocks].values.each_with_index do |value, i|
-              - if not type.eql?('reduce')
-                %div.clearfix.row.add-remove-element
-                  %div.pair
-                    %label{:for => "#{type}_value_#{i}"} Emit-Value:
-                    %input{:type =>  "text", :name => "#{type}_value_name[]", :class => "text", :value => value.name, :id => "#{type}_value_#{i}"}
-                  %div.pair
-                    %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function:
-                    %input{:type =>  "text", :name => "#{type}_value_function[]", :class => "text", :value => value.function, :id => "#{type}_value_function_#{i}"}
-
-          %a{:data => {:role => 'button', :type => 'pulldown'}} Your Javascript-Code
-          %div.clearfix.row.pulldown
-            %label{:for => "code"} Your Javascript-Code:
-            %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 50}= @mr_step[:blocks].code
-
-          %a{:data => {:role => 'button', :type => 'pulldown'}} MR-Code for #{@mr_step[:type]}
-          %div.clearfix.row.pulldown
-            %label{:for => "code_#{type}"} MR-Code for #{@mr_step[:type]}:
-            %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50, :readonly => 'readonly', :id => "code_#{type}"}= @mr_step[:code]
-
-          %div.row.submit.save_and_back
-            %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
-
-          %input{:type => 'hidden', :name => 'database',          :value => @mrm.database}
-          %input{:type => 'hidden', :name => 'base_collection',   :value => @mrm.base_collection}
-          %input{:type => 'hidden', :name => 'mr_collection',     :value => @mrm.mr_collection}
-  = haml :footer_col, :layout => false
+  = haml :header_col, :layout => false, :locals => {:name => @mrf.name, :uuid => @mrf.uuid}
+  %div{:data => {:role => 'content'}}
+    %form{:action => "/builder/#{@mrf.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+      %div.builder
+        = haml :builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mr_step[:blocks].keys}
+        = haml :builder_col_emit_values, :locals => {:type => type, :emit_values => @mr_step[:blocks].values}
+        = haml :builder_col_code, :locals => {:type => type, :user_code => @mr_step[:blocks].code, :generated_code => @mr_step[:code]}
+      %div.row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
+  = haml :footer_col, :layout => false, :locals => {:uuid => @mrf.uuid}

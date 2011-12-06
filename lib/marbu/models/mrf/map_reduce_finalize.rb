@@ -7,78 +7,57 @@ module Marbu
     # the builder will use MapReduce-Models to build actual mapreduce code
     class MapReduceFinalize
       include Mongoid::Fields::Serializable
-      attr_accessor :map, :reduce, :finalize, :query, :force_query, :database, :base_collection
-      attr_accessor :mr_collection
-      VALUE = :value
-      VALUE_STR = VALUE.to_s
-      DOCUMENT_OFFSET = VALUE.to_s + "."
+      attr_reader :map, :reduce, :finalize, :query, :misc
 
-      def serialize(object)
-        object.serializable_hash
+      def initialize(ext_params = {})
+        # TODO: deep copy necessary why?
+        params = default_params.merge( Marshal.load(Marshal.dump(ext_params)) )
+
+        self.map                = params[:map]
+        self.reduce             = params[:reduce]
+        self.finalize           = params[:finalize]
+        self.query              = params[:query]
+        self.misc               = params[:misc]
       end
 
-      def deserialize(object)
-        MapReduceFinalize.new(object)
+      def default_params
+        {
+          :map                => Map.new,
+          :reduce             => Reduce.new,
+          :finalize           => Finalize.new,
+          :query              => Query.new,
+          :misc               => Misc.new
+        }
       end
 
-      def initialize(params = nil)
-        @map = Map.new
-        @reduce = Reduce.new
-        @finalize = Finalize.new
-        @query = nil
-        @force_query  = false
-        @database = nil
-        @base_collection = nil
-        @mr_collection = nil
+      def map=(map)
+        @map = general_setter(map, Marbu::Models::Map)
+      end
 
-        if( params )
-          # make a deep copy
-          cloned_params = Marshal.load(Marshal.dump(params))
+      def reduce=(reduce)
+        @reduce = general_setter(reduce, Marbu::Models::Reduce)
+      end
 
-          mapreduce_keys    = cloned_params.delete(:mapreduce_keys) || cloned_params.delete("mapreduce_keys")
-          mapreduce_values  = cloned_params.delete(:mapreduce_values) || cloned_params.delete("mapreduce_values")
+      def finalize=(finalize)
+        @finalize = general_setter(finalize, Marbu::Models::Finalize)
+      end
 
-          if( mapreduce_keys && mapreduce_values )
-            @map = Map.new(
-                :keys         => mapreduce_keys,
-                :values       => mapreduce_values,
-                :code         => cloned_params.delete(:map) || cloned_params.delete("map")
-            )
+      def query=(query)
+        @query = general_setter(query, Marbu::Models::Query)
+      end
 
-            @reduce = Reduce.new(
-                :keys         => mapreduce_keys,
-                :values       => mapreduce_values,
-                :code         => cloned_params.delete(:reduce) || cloned_params.delete("reduce")
-            )
-
-            @finalize = Finalize.new(
-                :keys         => mapreduce_keys,
-                :values       => cloned_params.delete(:finalize_values) || cloned_params.delete("finalize_values"),
-                :code         => cloned_params.delete(:finalize) || cloned_params.delete("finalize")
-            )
-          end
-
-
-          # initialize remaining object variables
-          cloned_params.keys.each do |k|
-            send("#{k}=".to_sym, params[k]) if respond_to?(k.to_sym)
-          end
-        end
+      def misc=(misc)
+        @misc = general_setter(misc, Marbu::Models::Misc)
       end
 
       def serializable_hash
         {
-          :mapreduce_keys             => @map.serializable_hash[:keys],
-          :mapreduce_values           => @map.serializable_hash[:values],
-          :finalize_values            => @finalize.serializable_hash[:values],
-          :database                   => @database,
-          :base_collection            => @base_collection,
-          :mr_collection              => @mr_collection,
-          :query                      => @query,
-          :map                        => @map.code,
-          :reduce                     => @reduce.code,
-          :finalize                   => @finalize.code
-        }
+          :map                        => map.serializable_hash,
+          :reduce                     => reduce.serializable_hash,
+          :finalize                   => finalize.serializable_hash,
+          :query                      => query.serializable_hash,
+          :misc                       => misc.serializable_hash
+        }.delete_if{|k,v|v.blank?}
       end
 
       # return true if we have a map and a reduce function defined
@@ -98,19 +77,27 @@ module Marbu
         eql?(other)
       end
 
-      # sanatize JS in here
-      def query=(q)
-        @query = q
+      # TODO: please remove after Mongoid gets non-intrusive de/serialization
+      def serialize(object)
+        object.serializable_hash
       end
 
-      def mr_key
-        [].tap do |arr|
-          # @map.keys should be in the map-reduce-model directly
-          @map.keys.each do |mapreduce_key|
-            arr << mapreduce_key.name
-          end
-        end
+      def deserialize(object)
+        MapReduceFinalize.new(object.symbolize_keys_rec)
       end
+
+      private
+        def general_setter(var, klass)
+          if( var.is_a?(klass) )
+            ret_val = var
+          elsif( var.is_a?( ::Hash ) )
+            ret_val = klass.new(var)
+          else
+            raise Exception.new("Unsupported var type: #{var.class}")
+          end
+
+          return ret_val
+        end
     end
   end
 end

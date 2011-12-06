@@ -27,12 +27,24 @@ This will start Marbu with the provided MongoDB-Configuration file.
 If everything is working, you can go to 'localhost:5678' (if you are already running something on 5678 then try 5679) and
 you should see all databases in your local MongoDB installation.
 
-Mongobile? (https://github.com/dcu/mongobile)
-
 After selecting a Database you will see all collections within this database. You select a collection and go into the 'marbu' mode.
 In the 'marbu' mode you can build your map - reduce - finalize functionality. After that run your query and see what you get. Done!
 
 
-Tests
------------------
-bundle exec rspec spec
+## Development
+
+Clone the repo
+
+    $ git clone git@github.com:QEDio/qstate.git
+
+Update submodules
+
+    $ git submodule init && git submodule update
+
+Install dependencies
+
+    $ bundle install
+
+Run the tests
+
+    $ bundle exec rpsec spec

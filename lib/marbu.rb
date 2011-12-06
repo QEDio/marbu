@@ -1,14 +1,14 @@
+require 'mongo'
+require 'mongoid'
+require 'core_ext/enumerable'
+
 require 'marbu/exceptions'
-require 'marbu/formatters/base'
-require 'marbu/formatters/dummy'
-require 'marbu/formatters/one_line'
+require 'marbu/formatters/formatters'
 require 'marbu/builders/mongodb'
 require 'marbu/builder'
-require 'marbu/shotgun'
-
 require 'marbu/models/models'
 
-require 'mongo'
+
 
 module Marbu
   # Your code goes here...

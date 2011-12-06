@@ -15,7 +15,7 @@ describe Marbu::Models::Map do
     end
 
     it "should have no code" do
-      map.code.should be_nil
+      map.code.present?.should be_false
     end
   end
 end

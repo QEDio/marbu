@@ -30,7 +30,7 @@ module Marbu
     end
 
     def query
-      @map_reduce_model.query
+      @map_reduce_model.query.condition
     end
 
     def log
