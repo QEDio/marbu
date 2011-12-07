@@ -1,19 +1,21 @@
-require 'marbu/exceptions'
-require 'marbu/formatters/base'
-require 'marbu/formatters/dummy'
-require 'marbu/formatters/one_line'
-require 'marbu/builders/mongodb'
-require 'marbu/map_reduce_model'
-require 'marbu/builder'
-require 'marbu/shotgun'
-
 require 'mongo'
+require 'mongoid'
+require 'core_ext/enumerable'
+
+require 'marbu/exceptions'
+require 'marbu/formatters/formatters'
+require 'marbu/builders/mongodb'
+require 'marbu/builder'
+require 'marbu/models/models'
+
+
 
 module Marbu
   # Your code goes here...
   extend self
 
   attr_reader :port, :uri
+  attr_accessor :storage
 
   def database=(database)
     @database = database
@@ -55,6 +57,10 @@ module Marbu
     else
       nil
     end
+  end
+
+  def storage_collection
+    Mongo::Connection.new(storage[:uri],storage[:port]).db(storage[:database]).collection(storage[:collection])
   end
 end
 

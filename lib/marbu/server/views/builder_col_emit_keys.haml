@@ -1,0 +1,11 @@
+- if not type.eql?('reduce')
+  %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Keys/Emit-Key-Functions
+  - emit_keys.each_with_index do |key, i|
+    %div.add-remove.pulldown
+      %div.clearfix.row.add-remove-element
+        %div.pair
+          %label{:for => "#{type}_key_#{i}"} Emit-Key:
+          %input{:type =>  "text", :name => "#{type}_key_name[]", :class => "text", :value => key.name, :id => "#{type}_key_#{i}"}
+        %div.pair
+          %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
+          %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}

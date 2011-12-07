@@ -1,0 +1,20 @@
+%div.col{:id => 'misc', :data => {:role => 'page'}}
+  = haml :header_col, :layout => false, :locals => {:name => @mrf.name, :uuid => @mrf.uuid}
+  %div{:data => {:role => 'content'}}
+    %form{:action => "/builder/#{@mrf.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+      %div.clearfix.row.add-remove-element
+        %div.pair
+          %label{:for => "name"} Name:
+          %input{:type =>  "text", :name => "name", :class => "text", :value => @mrf.name, :id => "name"}
+        %div.pair
+          %label{:for => "database"} Database
+          %input{:type =>  "text", :name => "database", :class => "text", :value => @mrm.misc.database, :id => "database"}
+        %div.pair
+          %label{:for => "input_collection"} Input Collection:
+          %input{:type =>  "text", :name => "input_collection", :class => "text", :value => @mrm.misc.input_collection, :id => "input_collection"}
+        %div.pair
+          %label{:for => "output_collection"} Output Collection:
+          %input{:type =>  "text", :name => "output_collection", :class => "text", :value => @mrm.misc.output_collection, :id => "output_collection"}
+      %div.row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
+  = haml :footer_col, :layout => false, :locals => {:uuid => @mrf.uuid}

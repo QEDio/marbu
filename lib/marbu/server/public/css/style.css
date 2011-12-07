@@ -1,0 +1,149 @@
+body {
+  padding:  0;
+  margin:   0;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+
+
+
+/* builder */
+.builder .col {
+  display:  block;
+}
+
+.builder .row {
+  display:  block;
+  margin:   0 0 15px 0;
+  border:   1px dotted #777;
+  position: relative;
+  background: #ddd;
+  border-radius:  10px;
+}
+
+.builder .row.submit {
+  text-align: center;
+  padding:     20px 0 0 0;
+  border:       none;
+  border-radius:  0;
+  background:   none;
+}
+
+.builder .col legend {
+  font-weight:  bold;
+}
+
+.builder .col label {
+  font-size:  0.8em;
+  color:      #333;
+}
+
+.builder .col .pair {
+/*  float:        left;*/
+/*  margin-right: 2%;*/
+/*  width:        45%;*/
+    margin: 0 auto 15px auto;
+    padding:  5px 10px 5px 5px;
+}
+
+.builder .col .pair:last-child {
+  margin-right: 0;
+  margin-bottom:  0;
+}
+
+
+/*.builder .col textarea, .builder .col .ui-btn {
+  width:        91%;
+}
+*/
+
+/*.builder .col input {
+  width:    180px;
+  display:  block;
+}
+
+.builder .col textarea {
+  display:  block;
+  width:    385px;
+}
+
+input, textarea {
+  border:   1px solid #777;
+  padding:  2px;
+}
+
+input:hover, textarea:hover {
+  border-color:  #333;
+  box-shadow: 0 0 2px #ccc;
+}
+
+input:focus, textarea:focus {
+  box-shadow: 0 0 5px #555;
+  border-color: #000;
+}*/
+
+.add-remove {
+  clear:  both;
+  margin: 0 0 20px 0;
+}
+
+/*.add-remove .add, .add-remove .remove {
+  text-decoration:  none;
+  display:          inline-block;
+  position:         relative;
+}*/
+
+.add-remove a.remove {
+  background:       url('/images/remove.png') 0 0 no-repeat;
+  width:            20px;
+  height:           20px;
+  padding:          0;
+  text-indent:      -9999em;
+  top:              5px;
+  right:            5px;
+  display:          block;
+  position:         absolute;
+}
+
+#container .pulldown {
+  margin:   0 0 40px 0;
+}
+
+a[data-type="pulldown"] {
+  text-align: left;
+}
+
+/*.add-remove .add {
+  margin:     0 0 20px 0;
+  display:    block;
+  text-align: center;
+  border:     1px solid #777;
+  color:      #777;
+  width:      390px;
+}
+
+
+.add-remove .add:hover {
+  border-color: #000;
+  color:        #000;
+}*/

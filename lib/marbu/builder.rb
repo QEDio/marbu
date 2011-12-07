@@ -5,20 +5,19 @@ module Marbu
     attr_accessor :map_reduce_model
 
     def initialize(mrm, options = {})
-      if mrm.is_a?(Marbu::MapReduceModel)
+      if mrm.is_a?(Marbu::Models::MapReduceFinalize)
         @map_reduce_model = mrm
       elsif mrm.is_a?(Hash)
-        @map_reduce_model = Marbu::MapReduceModel.new(mrm)
+        @map_reduce_model = Marbu::Models::MapReduceFinalize.new(mrm)
       else
-        raise Exception.new("Parameter mrm was neither of type MapReduceModel nor Hash. Aborting")
+        raise Exception.new("Parameter mrm was neither of type MapReduceFinalize nor Hash, but #{mrm.class}. Aborting")
       end
-      
+
       @builder_clasz    = options[:builder] || Marbu::Builder::Mongodb
       @formatter_clasz  = options[:formatter] || Marbu::Formatter::Dummy
     end
 
     def map
-      raise Marbu::Exceptions::NoEmitKeys if @map_reduce_model.map.keys.size == 0
       @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map))
     end
 
@@ -31,7 +30,7 @@ module Marbu
     end
 
     def query
-      @map_reduce_model.query
+      @map_reduce_model.query.condition
     end
 
     def log
