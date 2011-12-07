@@ -47,4 +47,4 @@ Install dependencies
 
 Run the tests
 
-    $ bundle exec rpsec spec
+    $ rake
