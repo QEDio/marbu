@@ -2,7 +2,7 @@ module Marbu
   module Models
     module Db
       class MongoDb
-        class Exception
+        class Exception < StandardError
           REFERENCE_ERROR       = 'ReferenceError'
 
           def self.explain(e)
