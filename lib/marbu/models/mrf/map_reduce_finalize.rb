@@ -92,6 +92,8 @@ module Marbu
             ret_val = var
           elsif( var.is_a?( ::Hash ) )
             ret_val = klass.new(var)
+          elsif( var.nil? )
+            ret_val = klass.new
           else
             raise Exception.new("Unsupported var type: #{var.class}")
           end
