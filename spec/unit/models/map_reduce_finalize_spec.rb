@@ -8,9 +8,11 @@ describe Marbu::Models::MapReduceFinalize do
     it "has a map" do
       mrm.map.should be_an_instance_of(Marbu::Models::Map)
     end
+
     it "has a reduce" do
       mrm.reduce.should be_an_instance_of(Marbu::Models::Reduce)
     end
+
     it "has a finalize" do
       mrm.finalize.should be_an_instance_of(Marbu::Models::Finalize)
     end
@@ -23,5 +25,4 @@ describe Marbu::Models::MapReduceFinalize do
       mrm.serializable_hash.should == MR_WWB_LOC_DIM0
     end
   end
-
 end
