@@ -8,8 +8,6 @@ require 'marbu/builders/mongodb'
 require 'marbu/builder'
 require 'marbu/models/models'
 
-
-
 module Marbu
   # Your code goes here...
   extend self
