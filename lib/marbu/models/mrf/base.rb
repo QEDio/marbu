@@ -69,9 +69,12 @@ module Marbu
       attr_accessor :name, :function
 
       def initialize(params)
-        params.keys.each do |k|
-          send("#{k}=".to_sym, params[k]) if respond_to?(k)
-        end
+        #params.keys.each do |k|
+        #  send("#{k}=".to_sym, params[k]) if respond_to?(k)
+        #end
+
+        self.name       = params[:name]
+        self.function   = params[:function]
       end
 
       def name=(name)
@@ -96,6 +99,32 @@ module Marbu
     end
 
     class Key < KeyValueBase
+      attr_reader :exchangeable
+
+      def initialize( ext_options = {} )
+        options             = default_options.merge( ext_options.delete_if{|k,v|v.nil?} )
+
+        self.exchangeable   = options.delete(:exchangeable)
+        super(options)
+      end
+
+      def default_options
+        {
+          :exchangeable        => true
+        }
+      end
+
+      def exchangeable=(e)
+        # make sure it's a boolean
+        if( !!e == e )
+          @exchangeable = e
+        else
+          raise Exception.new("Hey, I need a boolean!")
+        end
+
+        return self
+      end
+
     end
 
     class Value < KeyValueBase
