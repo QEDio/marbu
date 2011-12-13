@@ -1,21 +1,25 @@
 module Marbu
   module Models
     class Query
-      attr_accessor :condition, :time_params
+      DEFAULT_DATE_FIELDS = [:created_at]
+
+      attr_accessor :condition, :datetime_fields
+
 
       def initialize( ext_params = {} )
         params                  = default_params.merge( ext_params.keep_if{|k,v|v} )
         @condition              = params[:condition]
-        @time_params            = params[:time_params]
+        @datetime_fields        = params[:datetime_fields]
       end
 
       def default_params
         {
+          :datetime_fields      => DEFAULT_DATE_FIELDS
         }
       end
 
       def present?
-        condition.present? || time_params.present?
+        condition.present? || datetime_fields.present?
       end
 
       def blank?
@@ -25,7 +29,7 @@ module Marbu
       def serializable_hash
         {
           :condition              => condition,
-          :time_params            => time_params
+          :datetime_fields        => datetime_fields
         }.delete_if{|k,v|v.blank?}
       end
     end

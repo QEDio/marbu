@@ -44,6 +44,10 @@ MR_WWB_LOC_DIM0 = {
     :database             => "qed_test",
     :input_collection     => 'world_wide_business',
     :output_collection    => 'world_wide_business_mr_dim0',
+  },
+
+  :query => {
+    :datetime_fields => [:created_at]
   }
 }
 
@@ -85,6 +89,10 @@ MR_WWB_LOC_DIM0_NO_MAP_EMIT_KEYS = {
     :database             => "qed_test",
     :input_collection     => 'world_wide_business',
     :output_collection    => 'world_wide_business_mr_dim0',
+  },
+
+  :query => {
+    :datetime_fields => [:created_at]
   }
 }
 
@@ -131,5 +139,9 @@ MR_WWB_LOC_DIM0_TWO_MAP_EMIT_KEYS = {
     :database             => "qed_test",
     :input_collection     => 'world_wide_business',
     :output_collection    => 'world_wide_business_mr_dim0',
+  },
+
+  :query => {
+    :datetime_fields => [:created_at]
   }
 }
