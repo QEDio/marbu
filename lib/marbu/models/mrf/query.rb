@@ -19,7 +19,7 @@ module Marbu
       end
 
       def present?
-        condition.present? || datetime_fields.present?
+        condition.present? || !datetime_fields.eql?(DEFAULT_DATE_FIELDS)
       end
 
       def blank?
