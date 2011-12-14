@@ -4,7 +4,7 @@ module Marbu
       attr_accessor :database, :input_collection, :output_collection, :output_operation
       # if filter_data is true, a query will be created depending on the filter parameters in filter_model
       # if filter_data is false, no query will generated
-      # this is necessary for multiplo sequentiell map_reduces: some will work on already filtered data (so no filter needed)
+      # this is necessary for multiple sequentiell map_reduces: some will work on already filtered data (so no filter needed)
       # while others will grab data from other collections which need to be filtered first
       attr_reader :filter_data
       attr_accessor :value, :document_offset
@@ -26,7 +26,7 @@ module Marbu
         {
           :value              => VALUE,
           :document_offset    => DOCUMENT_OFFSET,
-          :filter_data        => true,
+          :filter_data        => false,
           :output_operation   => "replace"
         }
       end
