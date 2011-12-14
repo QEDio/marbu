@@ -44,6 +44,8 @@ MR_WWB_LOC_DIM0 = {
     :database             => "qed_test",
     :input_collection     => 'world_wide_business',
     :output_collection    => 'world_wide_business_mr_dim0',
+    :output_operation     => 'replace',
+    :filter_data          => true,
   },
 
   :query => {

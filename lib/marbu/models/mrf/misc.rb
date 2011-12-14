@@ -1,7 +1,7 @@
 module Marbu
   module Models
     class Misc
-      attr_accessor :database, :input_collection, :output_collection
+      attr_accessor :database, :input_collection, :output_collection, :output_operation
       # if filter_data is true, a query will be created depending on the filter parameters in filter_model
       # if filter_data is false, no query will generated
       # this is necessary for multiplo sequentiell map_reduces: some will work on already filtered data (so no filter needed)
@@ -18,6 +18,7 @@ module Marbu
         self.database           = params[:database]
         self.input_collection   = params[:input_collection]
         self.output_collection  = params[:output_collection]
+        self.output_operation   = params[:output_operation]
         self.filter_data        = params[:filter_data]
       end
 
@@ -25,7 +26,8 @@ module Marbu
         {
           :value              => VALUE,
           :document_offset    => DOCUMENT_OFFSET,
-          :filter_data        => true
+          :filter_data        => true,
+          :output_operation   => "replace"
         }
       end
 
@@ -38,7 +40,7 @@ module Marbu
       end
 
       def present?
-        database.present? || input_collection.present? || input_collection.present?
+        database.present? || input_collection.present? || output_collection.present?
       end
 
       def blank?
@@ -49,7 +51,9 @@ module Marbu
         {
           :database           => database,
           :input_collection   => input_collection,
-          :output_collection  => output_collection
+          :output_collection  => output_collection,
+          :output_operation   => output_operation,
+          :filter_data        => filter_data
         }.delete_if{|k,v|v.blank?}
       end
     end
