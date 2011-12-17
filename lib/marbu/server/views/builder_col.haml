@@ -1,0 +1,12 @@
+- type = @mr_step[:type]
+%div.col{:id => type, :data => {:role => 'page'}}
+  = haml :header_col, :layout => false, :locals => {:name => @mrf.name, :uuid => @mrf.uuid}
+  %div{:data => {:role => 'content'}}
+    %form{:action => "/builder/#{@mrf.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+      %div.builder
+        = haml :builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mr_step[:blocks].keys}
+        = haml :builder_col_emit_values, :locals => {:type => type, :emit_values => @mr_step[:blocks].values}
+        = haml :builder_col_code, :locals => {:type => type, :user_code => @mr_step[:blocks].code, :generated_code => @mr_step[:code]}
+      %div.row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
+  = haml :footer_col, :layout => false, :locals => {:uuid => @mrf.uuid}

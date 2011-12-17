@@ -5,7 +5,7 @@ module Marbu
         <<-JS
          function(){
             #{get_value(:map)}
-            #{map.code}
+            #{map.code.text}
             #{get_emit(:map, map.values, map.keys)}
           }
         JS
@@ -15,7 +15,7 @@ module Marbu
         <<-JS
           function(key,values){
             #{get_value(:reduce)}
-            #{reduce.code}
+            #{reduce.code.text}
             #{get_emit(:reduce, reduce.values)}
           }
         JS
@@ -24,7 +24,7 @@ module Marbu
       def self.finalize(finalize)
       <<-JS
         function(key, value){
-          #{finalize.code}
+          #{finalize.code.text}
           #{get_emit(:finalize, finalize.values)}
         }
       JS
@@ -64,8 +64,6 @@ module Marbu
         end
 
         def self.emit_keys(keys)
-          raise Exceptions::NoEmitKeys.new if keys.size == 0
-          
           emit_core(keys)
         end
 

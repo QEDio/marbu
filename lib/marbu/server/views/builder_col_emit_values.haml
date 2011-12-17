@@ -1,0 +1,11 @@
+%a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Values/Emit-Functions
+%div.add-remove.pulldown
+  - emit_values.each_with_index do |value, i|
+    - if not type.eql?('reduce')
+      %div.clearfix.row.add-remove-element
+        %div.pair
+          %label{:for => "#{type}_value_#{i}"} Emit-Value:
+          %input{:type =>  "text", :name => "#{type}_value_name[]", :class => "text", :value => value.name, :id => "#{type}_value_#{i}"}
+        %div.pair
+          %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function:
+          %input{:type =>  "text", :name => "#{type}_value_function[]", :class => "text", :value => value.function, :id => "#{type}_value_function_#{i}"}

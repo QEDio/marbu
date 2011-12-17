@@ -1,33 +1,21 @@
-%form{:action => "builder", :method => "post" }
-  %table
-    %th= "Key"
-    %th= "Value"
-    %th= "Code"
-    - [@map, @reduce, @finalize].each do |mr_step|
-      - type = mr_step[:type]
-      - mr_step[:blocks].keys.each_with_index do |key, i|
-        %tr
-          %td
-            %label{:for => "#{type}_key_#{i}"} Key #{i}:
-            %input{:type =>  "text", :name => "#{type}_key_name_#{i}", :class => "text", :value => key.name}
-          %td
-            %label{:for => "#{type}_key_function_#{i}"} Function #{i}:
-            %input{:type =>  "text", :name => "#{type}_key_function_#{i}", :class => "text", :value => key.function}
-      - mr_step[:blocks].values.each_with_index do |value, i|
-        %tr
-          %td
-            %label{:for => "#{type}_value_#{i}"} Value #{i}:
-            %input{:type =>  "text", :name => "#{type}_value_name_#{i}", :class => "text", :value => value.name}
-          %td
-            %label{:for => "#{type}_value_function_#{i}"} Function #{i}:
-            %input{:type =>  "text", :name => "#{type}_value_function_#{i}", :class => "text", :value => value.function}
-      %tr
-        %td{:colspan => 2}
-          %label{:for => "code"} Code:
-          %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 100}= mr_step[:blocks].code
+%div{:id => 'builder', :data => {:role => 'page'}}
+  = haml :header, :layout => false, :locals => {:text => @mrf.name}
+  %div{:data => {:role => 'content'}}
+    %form{:action => @mrf.uuid, :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+      %ul{:data => {:role => 'listview'}}
+        - [@map, @reduce, @finalize].each do |mr_step|
+          - type = mr_step[:type]
+          %li
+            %a{:href => "/builder/#{@mrf.uuid}/" + type, :data => {:transition => 'slide'}}=type.capitalize
+        %li
+          %a{:href => "/builder/#{@mrf.uuid}/misc", :data => {:transition => 'slide'}}='Misc'
+      %div.row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
+        %a{:href => "/mapreduce/#{@mrf.uuid}", :data => {:transition => 'slide', :role => 'button'}}= 'Execute'
 
-      %tr
-        %td{:colspan => 2}
-          %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 100}= mr_step[:code]
+  %div{:data => {:role => 'content'}}
+    %form{:action => @mrf.uuid, :method => "delete", :class => 'builder', :data => {:transition => 'none'}}
+      %input{:type => "submit", :value => "Delete"}
 
-  %input{:type => "submit", :value => "Save", :class => "button"}
+       
+  = haml :footer, :layout => false

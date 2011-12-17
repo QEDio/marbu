@@ -2,12 +2,17 @@ require 'sinatra/base'
 require 'haml'
 require 'time'
 require 'marbu'
+require 'uuid'
 
 module Marbu
   class Server < Sinatra::Base
+    logger = ::File.open("log/development.log", "a")
+    STDOUT.reopen(logger)
+    STDERR.reopen(logger)
+
     dir = File.dirname(File.expand_path(__FILE__))
     set :views, "#{dir}/server/views"
-    set :public, "#{dir}/server/public"
+    set :public_folder, "#{dir}/server/public"
     set :static, true
     set :logging, STDERR
 
@@ -22,90 +27,157 @@ module Marbu
       end
     end
 
-    get('/') { redirect '/builder' }
-    
-    # to make things easier on ourselves
-    get "/builder" do
-      if Marbu.collection
-        mrm_hsh   = Marbu.collection.find_one || TMP_MR_WWB_LOC_DIM0
+    # stored map reduce finalize objects
+    get "/" do
+      @mrfs = Marbu::Models::Db::MongoDb.all
+      show 'root'
+    end
+
+    get "/builder/new" do
+      @mrf              = Marbu::Models::Db::MongoDb.new
+      @mrf.save!
+
+      redirect "builder/#{@mrf.uuid}"
+    end
+
+    get "/builder/:uuid/:type" do
+      @mrf        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrm        = @mrf.map_reduce_finalize
+      @builder    = Marbu::Builder.new(@mrm)
+      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
+      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
+      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+
+      @cols       = {'map' => @map, 'reduce' => @reduce, 'finalize' => @finalize}
+      @mr_step    = @cols[params[:type]]
+
+      if(params['type'].eql?('misc'))
+        haml :builder_misc
       else
-        mrm_hsh   = TMP_MR_WWB_LOC_DIM0
+        haml :builder_col
       end
+    end
 
-      @mrm        = Marbu::MapReduceModel.new(mrm_hsh)
+    get "/builder/:uuid" do
+      @mrf        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrm        = @mrf.map_reduce_finalize
       @builder    = Marbu::Builder.new(@mrm)
+      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
+      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
+      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+
+      show 'builder'
+    end
+
+    post "/builder/:uuid" do
+      @mrf                  = build_mrf_from_params(params.merge({:logger => logger}))
+      @mrf.save!
+
+      @mrm        = @mrf.map_reduce_finalize
+      @builder    = Marbu::Builder.new(@mrm)
+      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
+      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
+      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+
+      show 'builder'
+    end
+
+    delete "/builder/:uuid" do
+      @mrf = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrf.destroy if( @mrf.present? )
+
+      redirect "/"
+    end
+
+    get "/mapreduce/:uuid" do
+      @mrf         = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @builder     = Marbu::Builder.new(@mrf.map_reduce_finalize)
+      @error      = nil
+
+      begin
+        # TODO: naturally this has to take the DATABASE and COLLECTION from the mapreducefilter object
+        # TODO: don;t take the parameters from the mapreducefilter object if DATABASE or DATABASE and COLLECTION are
+        # TODo: defined in the configuration (security)
+        @res = Marbu.collection.map_reduce( @builder.map, @builder.reduce,
+          {
+            :query  => @builder.query,
+            :out    => {:replace => "tmp."+@mrf.map_reduce_finalize.misc.output_collection}#,
+            #:finalize => builder.finalize
+          }
+        )
+      rescue Mongo::OperationFailure => e
+        @error = Marbu::Models::Db::MongoDb::Exception.explain(e)
+      end
       
-      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
-      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
-      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
-
-      show 'builder'
+      show 'mapreduce'
     end
 
-    post "/builder" do
-      @mrm         = Marbu::MapReduceModel.new
-      map          = Marbu::MapReduceModel::MapModel.new
-      reduce       = Marbu::MapReduceModel::ReduceModel.new
-      finalize     = Marbu::MapReduceModel::FinalizeModel.new
+    def build_mrf_from_params(params)
+      raise Exception.new("No uuid!") if params['uuid'].blank?
 
-      @mrm.map      = map
-      @mrm.reduce   = reduce
-      @mrm.finalize = finalize
+      name                      = 'name'
+      function                  = 'function'
 
-      map.code         = params.delete('map_code')
-      reduce.code      = params.delete('reduce_code')
-      finalize.code    = params.delete('finalize_code')
+      uuid                      = params['uuid']
+      mrf                       = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
+      mrm                       = mrf.map_reduce_finalize
 
-      sorted_params = sort_params(params)
+      map_new                   = Marbu::Models::Map.new(
+                                      :code => {:text => params['map_code']}
+                                    )
+      reduce_new                = Marbu::Models::Reduce.new(
+                                      :code => {:text => params['reduce_code']}
+                                    )
+      finalize_new              = Marbu::Models::Finalize.new(
+                                      :code => {:text => params['finalize_code']}
+                                    )
+      query_new                 = Marbu::Models::Query.new(
+                                        :condition    => params['query_condition'],
+                                        :force_query  => params['query_force_query']
+                                    )
+      misc_new                  = Marbu::Models::Misc.new(
+                                        :database           => params['database'],
+                                        :input_collection   => params['input_collection'],
+                                        :output_collection  => params['output_collection']
+                                    )
 
-      # rebuild mapreduce model
-      sorted_params.each do |k,v|
-        k =~ /(.+?)_(.+?)_(.*)/
+      # add params to map_new, reduce_new, finalize_new
+      ['map', 'finalize'].each do |stage|
+        ['key', 'value'].each do |type|
+          stage_type_name       = params["#{stage}_#{type}_#{name}"]
+          stage_type_function   = params["#{stage}_#{type}_#{function}"]
 
-        case $1
-          when 'map'        then add(map, $2, v[:name], v[:function])
-          when 'reduce'     then add(reduce, $2, v[:name], v[:function])
-          when 'finalize'   then add(finalize, $2, v[:name], v[:function])
-          else raise Exception.new("#{$1} in #{k} is unknown")
+          if( stage_type_name.present?)
+            stage_type_name.each_with_index do |n, i|
+              case stage
+                when 'map'        then
+                  add(map_new, type, n, stage_type_function[i])
+                  # TODO: for now there is no difference between map and reduce emit-keys and emit-values. And most likely there shouldn't be one, but we'll see
+                  add(reduce_new, type, n, stage_type_function[i])
+                when 'finalize'   then add(finalize_new, type, n, stage_type_function[i])
+                else raise Exception.new("#{stage} in #{k} is unknown")
+              end
+            end
+          end
         end
       end
 
-      if( Marbu.collection )
-        Marbu.collection.insert(@mrm.hash)
-      end
+      mrm.map               = map_new if map_new.present?
 
-      @builder    = Marbu::Builder.new(@mrm)
-      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
-      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
-      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
+      reduce_new.keys       = mrm.map.keys
+      reduce_new.values     = mrm.map.values
+      mrm.reduce            = reduce_new if reduce_new.present?
 
-      show 'builder'
-    end
+      finalize_new.keys     = mrm.map.keys
+      mrm.finalize          = finalize_new if finalize_new.present?
 
-    #### fuuu, rebuild mapreduce model from provided params hash
-    # wouldn't be necessary if I know HTML
-    def sort_params(params)
-      {}.tap do |sorted_params|
-        params.each_pair do |k,v|
-          # map parameters
-          k =~ /(.+?)_(.+?)_(.+?)_(.*)/
+      mrm.query             = query_new if query_new.present?
+      mrm.misc              = misc_new if misc_new.present?
 
-          next if $1.nil?
+      mrf.map_reduce_finalize   = mrm
+      mrf.name                  = params['name'] if params['name'].present?
 
-          block       = $1
-          type        = $2
-          sub_type1    = $3
-          number      = $4
-
-          next if sorted_params.key?("#{block}_#{type}_#{number}")
-
-          sub_type2 = sub_type1.eql?("name") ? "function" : "name"
-          v2 = params["#{block}_#{type}_#{sub_type2}_#{number}"]
-          raise Exception.new("corresponding param not found") if v2.nil?
-
-          sorted_params["#{block}_#{type}_#{number}"] = {:name => v, :function => v2}
-        end
-      end
+      return mrf
     end
 
     def add(model, type, name, function)
@@ -116,19 +188,8 @@ module Marbu
       end
     end
 
-    #%w( builder ).each do |page|
-    #  get "/#{page}" do
-    #    show page
-    #  end
-    #
-    #  get "/#{page}/:id" do
-    #    show page
-    #  end
-    #end
-
     def show(page)
       haml page.to_sym
     end
   end
-
 end

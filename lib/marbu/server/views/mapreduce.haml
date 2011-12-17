@@ -1,0 +1,8 @@
+%div{:data => {:role => 'content'}}
+  - if @error.present?
+    = @error.to_s
+  - else
+    %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 100}= @res.find().to_a.inspect
+    %input{:type => "submit", :value => "Save", :class => "button"}
+
+  %a{:href => "/builder/#{@mrf.uuid}", :data => {:transition => 'slide', :role => 'button'}}= 'Back'
