@@ -27,64 +27,39 @@ module Marbu
       end
     end
 
-    # stored map reduce finalize objects
     get "/" do
-      @mrfs = Marbu::Models::Db::MongoDb.all
+      @mrms = Marbu::Models::Db::MongoDb.all
       show 'root'
     end
 
     get "/builder/new" do
-      @mrf              = Marbu::Models::Db::MongoDb.new
-      @mrf.save!
-
-      redirect "builder/#{@mrf.uuid}"
+      @mrm              = Marbu::Models::Db::MongoDb.new
+      @mrf              = @mrm.map_reduce_finalize
+      show 'builder'
     end
 
-    get "/builder/:uuid/:type" do
-      @mrf        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-      @mrm        = @mrf.map_reduce_finalize
-      @builder    = Marbu::Builder.new(@mrm)
-      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
-      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
-      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
 
-      @cols       = {'map' => @map, 'reduce' => @reduce, 'finalize' => @finalize}
-      @mr_step    = @cols[params[:type]]
-
-      if(params['type'].eql?('misc'))
-        haml :builder_misc
-      else
-        haml :builder_col
-      end
+    post "/builder" do
+      @mrm                  = build_mrm_from_params(params.merge({:logger => logger}))
+      @mrm.save!
+      redirect "/builder/#{@mrm.uuid}"
     end
 
     get "/builder/:uuid" do
-      @mrf        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-      @mrm        = @mrf.map_reduce_finalize
-      @builder    = Marbu::Builder.new(@mrm)
-      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
-      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
-      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
-
+      @mrm        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrf        = @mrm.map_reduce_finalize
       show 'builder'
     end
 
-    post "/builder/:uuid" do
-      @mrf                  = build_mrf_from_params(params.merge({:logger => logger}))
-      @mrf.save!
-
-      @mrm        = @mrf.map_reduce_finalize
-      @builder    = Marbu::Builder.new(@mrm)
-      @map        = {:blocks => @mrm.map, :code => @builder.map, :type => "map"}
-      @reduce     = {:blocks => @mrm.reduce, :code => @builder.reduce, :type => "reduce"}
-      @finalize   = {:blocks => @mrm.finalize, :code => @builder.finalize, :type => "finalize"}
-
-      show 'builder'
+    put "/builder/:uuid" do
+      @mrm                  = build_mrm_from_params(params.merge({:logger => logger}))
+      @mrm.save!
+      redirect "/builder/#{@mrm.uuid}"
     end
 
     delete "/builder/:uuid" do
-      @mrf = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-      @mrf.destroy if( @mrf.present? )
+      @mrm = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrm.destroy if( @mrm.present? )
 
       redirect "/"
     end
@@ -108,19 +83,22 @@ module Marbu
       rescue Mongo::OperationFailure => e
         @error = Marbu::Models::Db::MongoDb::Exception.explain(e)
       end
-      
+
       show 'mapreduce'
     end
 
-    def build_mrf_from_params(params)
-      raise Exception.new("No uuid!") if params['uuid'].blank?
-
+    def build_mrm_from_params(params)
       name                      = 'name'
       function                  = 'function'
 
       uuid                      = params['uuid']
-      mrf                       = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
-      mrm                       = mrf.map_reduce_finalize
+      if uuid
+        mrm                       = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
+      else
+        mrm = Marbu::Models::Db::MongoDb.new
+      end
+
+      mrf                       = mrm.map_reduce_finalize
 
       map_new                   = Marbu::Models::Map.new(
                                       :code => {:text => params['map_code']}
@@ -162,22 +140,22 @@ module Marbu
         end
       end
 
-      mrm.map               = map_new if map_new.present?
+      mrf.map               = map_new if map_new.present?
 
-      reduce_new.keys       = mrm.map.keys
-      reduce_new.values     = mrm.map.values
-      mrm.reduce            = reduce_new if reduce_new.present?
+      reduce_new.keys       = mrf.map.keys
+      reduce_new.values     = mrf.map.values
+      mrf.reduce            = reduce_new if reduce_new.present?
 
-      finalize_new.keys     = mrm.map.keys
-      mrm.finalize          = finalize_new if finalize_new.present?
+      finalize_new.keys     = mrf.map.keys
+      mrf.finalize          = finalize_new if finalize_new.present?
 
-      mrm.query             = query_new if query_new.present?
-      mrm.misc              = misc_new if misc_new.present?
+      mrf.query             = query_new if query_new.present?
+      mrf.misc              = misc_new if misc_new.present?
 
-      mrf.map_reduce_finalize   = mrm
-      mrf.name                  = params['name'] if params['name'].present?
+      mrm.map_reduce_finalize   = mrf
+      mrm.name                  = params['name'] if params['name'].present?
 
-      return mrf
+      return mrm
     end
 
     def add(model, type, name, function)

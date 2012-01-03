@@ -1,12 +1,12 @@
 %div{:id => 'root', :data => {:role => 'page'}}
-  = haml :header, :layout => false
+  = haml :_header, :layout => false
   %div{:data => {:role => 'content'}}
     %ul{:data => {:role => 'listview'}}
-      %a{:href => 'builder/new', :data => {:transition => 'slide', :role => 'button'}}= "new"
-      - @mrfs.each do |mrf|
+      %a{:href => 'builder/new', :data => {:transition => 'slide', :role => 'button', :ajax => 'false'}}= "new"
+      - @mrms.each do |mrf|
         - uuid = mrf.uuid
         - name = mrf.name
         %li
-          %a{:href => 'builder/' + uuid, :data => {:transition => 'slide'}}=name.capitalize
+          %a{:href => 'builder/' + uuid, :data => {:transition => 'slide', :ajax => 'false'}}=name.capitalize
 
-  = haml :footer, :layout => false
+  = haml :_footer, :layout => false
