@@ -38,7 +38,6 @@ module Marbu
       show 'builder'
     end
 
-
     post "/builder" do
       @mrm                  = build_mrm_from_params(params.merge({:logger => logger}))
       @mrm.save!
@@ -59,8 +58,7 @@ module Marbu
 
     delete "/builder/:uuid" do
       @mrm = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-      @mrm.destroy if( @mrm.present? )
-
+      @mrm.destroy if @mrm.present?
       redirect "/"
     end
 
