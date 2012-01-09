@@ -11,13 +11,10 @@
         %li
           %a{:href => "#misc", :data => {:transition => 'slide'}}='Misc'
       %div.row.submit.save_and_back
-        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
-        %a{:href => "#execute", :data => {:transition => 'slide', :role => 'button'}}= 'Execute'
-
-    / %div{:data => {:role => 'content'}}
-    /   %form{:action => @mrm.uuid, :method => "delete", :class => 'builder', :data => {:transition => 'none'}}
-    /     %input{:type => "submit", :value => "Delete"}
-
+        %button{:type => "submit", :value => "Save", :class => "button"} Save
+        - unless @mrm.new?
+          %a{:href => "#execute", :data => {:transition => 'slide', :role => 'button'}} Execute
+          %a{:href => "/builder/#{@mrm.uuid}/delete", :class => 'delete', :data => {:ajax => 'false', :role => 'button'}} Delete
 
     = haml :_footer, :layout => false
 
