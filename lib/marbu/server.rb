@@ -6,15 +6,16 @@ require 'uuid'
 
 module Marbu
   class Server < Sinatra::Base
-    logger = ::File.open("log/development.log", "a")
-    STDOUT.reopen(logger)
-    STDERR.reopen(logger)
+    configure :development do
+      require 'ruby-debug'
+    end
+
+    enable :logging, :dump_errors, :raise_errors
 
     dir = File.dirname(File.expand_path(__FILE__))
     set :views, "#{dir}/server/views"
     set :public_folder, "#{dir}/server/public"
     set :static, true
-    set :logging, STDERR
 
     helpers do
       def url_path(*path_parts)
