@@ -1,4 +1,6 @@
-%form{:id => "builder_form", :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => @mrm.new? ? "post" : "put", :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
+%form{:id => "builder_form", :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
+  - unless @mrm.new?
+    %input{:type => "hidden", :name => "_method", :value => "put"}
   %div{:id => 'builder', :data => {:role => 'page'}}
     = haml :_header, :layout => false, :locals => {:text => @mrf.name}
     %div{:data => {:role => 'content'}}

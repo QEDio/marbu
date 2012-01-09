@@ -10,7 +10,7 @@ module Marbu
       require 'ruby-debug'
     end
 
-    enable :logging, :dump_errors, :raise_errors
+    enable :logging, :dump_errors, :raise_errorsm, :method_override
 
     dir = File.dirname(File.expand_path(__FILE__))
     set :views, "#{dir}/server/views"
