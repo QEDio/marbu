@@ -1,5 +1,5 @@
-%div{:id => 'misc', :data => {:role => 'page'}}
-  = haml :_header_col, :layout => false, :locals => {:name => @mrm.name, :uuid => @mrm.uuid}
+%div{:id => 'misc', :data => {:role => 'page', :title => "Settings"}}
+  = haml :_header_col, :layout => false, :locals => {:title => "Settings"}
   %div{:data => {:role => 'content'}}
     %div.clearfix.row.add-remove-element
       %div.pair

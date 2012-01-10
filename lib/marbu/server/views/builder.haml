@@ -1,8 +1,8 @@
 %form{:id => "builder_form", :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
   - unless @mrm.new?
     %input{:type => "hidden", :name => "_method", :value => "put"}
-  %div{:id => 'builder', :data => {:role => 'page'}}
-    = haml :_header, :layout => false, :locals => {:text => @mrf.name}
+  %div{:id => 'builder', :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}}
+    = haml :_header, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}
     %div{:data => {:role => 'content'}}
       %ul{:data => {:role => 'listview'}}
         - ["map", "reduce", "finalize"].each do |type|
@@ -19,8 +19,8 @@
     = haml :_footer, :layout => false
 
   - ["map", "reduce", "finalize"].each do |type|
-    %div.col{:id => type, :data => {:role => 'page'}}
-      = haml :_header_col, :layout => false, :locals => {:name => @mrm.name, :uuid => @mrm.uuid}
+    %div.col{:id => type, :data => {:role => 'page', :title => type.capitalize}}
+      = haml :_header_col, :layout => false, :locals => {:title => type.capitalize}
       %div{:data => {:role => 'content'}}
         %div.builder
           = haml :_builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mrf.send(type.to_sym).keys}

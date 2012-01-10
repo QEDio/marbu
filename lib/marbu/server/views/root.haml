@@ -1,5 +1,5 @@
 %div{:id => 'root', :data => {:role => 'page'}}
-  = haml :_header, :layout => false
+  = haml :_header, :layout => false, :locals => { :title => "Listing objects" }
   %div{:data => {:role => 'content'}}
     %ul{:data => {:role => 'listview'}}
       %a{:href => '/builder/new', :data => {:transition => 'slide', :role => 'button', :ajax => 'false'}}= "new"
