@@ -64,10 +64,11 @@ module Marbu
     end
 
     get "/mapreduce/:uuid" do
-      @mrf         = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-      @builder     = Marbu::Builder.new(@mrf.map_reduce_finalize)
+      @mrm         = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @builder     = Marbu::Builder.new(@mrm.map_reduce_finalize)
       @error      = nil
 
+      debugger
       begin
         # TODO: naturally this has to take the DATABASE and COLLECTION from the mapreducefilter object
         # TODO: don;t take the parameters from the mapreducefilter object if DATABASE or DATABASE and COLLECTION are
@@ -75,7 +76,7 @@ module Marbu
         @res = Marbu.collection.map_reduce( @builder.map, @builder.reduce,
           {
             :query  => @builder.query,
-            :out    => {:replace => "tmp."+@mrf.map_reduce_finalize.misc.output_collection}#,
+            :out    => {:replace => "tmp."+@mrm.map_reduce_finalize.misc.output_collection}#,
             #:finalize => builder.finalize
           }
         )
