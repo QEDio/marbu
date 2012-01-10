@@ -1,0 +1,13 @@
+%div.footer{:data=>{:position=>'fixed', :role=>'footer'}}
+  %div.footer_navbar{:data=>{:role=>'navbar', :position =>'fixed'}}
+    %ul
+      %li
+        %a{:href => "#", :data => {:transition => 'slide'}}= 'back'
+      %li
+        %a{:href => "#map", :data => {:transition => 'slide'}}= 'map'
+      %li
+        %a{:href => "#reduce", :data => {:transition => 'slide'}}= 'reduce'
+      %li
+        %a{:href => "#finalize", :data => {:transition => 'slide'}}= 'finalize'
+      %li
+        %a{:href => "/mapreduce/#{uuid}", :data => {:transition => 'slide'}}= 'mapreduce'
