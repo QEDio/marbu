@@ -2,14 +2,12 @@
   - unless @mrm.new?
     %input{:type => "hidden", :name => "_method", :value => "put"}
   %div{:id => 'builder', :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}}
-    = haml :_header, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}
+    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}
     %div{:data => {:role => 'content'}}
       %ul{:data => {:role => 'listview'}}
         - ["map", "reduce", "finalize"].each do |type|
           %li
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
-        %li
-          %a{:href => "#misc", :data => {:transition => 'slide'}}='Misc'
       %div.row.submit.save_and_back
         %button{:type => "submit", :value => "Save", :class => "button"} Save
         - unless @mrm.new?
