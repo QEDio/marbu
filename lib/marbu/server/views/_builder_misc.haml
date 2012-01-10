@@ -1,0 +1,17 @@
+%div{:id => 'misc', :data => {:role => 'page'}}
+  = haml :_header_col, :layout => false, :locals => {:name => @mrm.name, :uuid => @mrm.uuid}
+  %div{:data => {:role => 'content'}}
+    %div.clearfix.row.add-remove-element
+      %div.pair
+        %label{:for => "name"} Name:
+        %input{:type =>  "text", :name => "name", :class => "text", :value => @mrm.name, :id => "name"}
+      %div.pair
+        %label{:for => "database"} Database
+        %input{:type =>  "text", :name => "database", :class => "text", :value => @mrf.misc.database, :id => "database"}
+      %div.pair
+        %label{:for => "input_collection"} Input Collection:
+        %input{:type =>  "text", :name => "input_collection", :class => "text", :value => @mrf.misc.input_collection, :id => "input_collection"}
+      %div.pair
+        %label{:for => "output_collection"} Output Collection:
+        %input{:type =>  "text", :name => "output_collection", :class => "text", :value => @mrf.misc.output_collection, :id => "output_collection"}
+  = haml :_footer_col, :layout => false, :locals => {:uuid => @mrm.uuid}

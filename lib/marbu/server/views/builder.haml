@@ -1,21 +1,33 @@
-%div{:id => 'builder', :data => {:role => 'page'}}
-  = haml :header, :layout => false, :locals => {:text => @mrf.name}
-  %div{:data => {:role => 'content'}}
-    %form{:action => @mrf.uuid, :method => "post", :class => 'builder', :data => {:transition => 'none'}}
+%form{:id => "builder_form", :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
+  - unless @mrm.new?
+    %input{:type => "hidden", :name => "_method", :value => "put"}
+  %div{:id => 'builder', :data => {:role => 'page'}}
+    = haml :_header, :layout => false, :locals => {:text => @mrf.name}
+    %div{:data => {:role => 'content'}}
       %ul{:data => {:role => 'listview'}}
-        - [@map, @reduce, @finalize].each do |mr_step|
-          - type = mr_step[:type]
+        - ["map", "reduce", "finalize"].each do |type|
           %li
-            %a{:href => "/builder/#{@mrf.uuid}/" + type, :data => {:transition => 'slide'}}=type.capitalize
+            %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
         %li
-          %a{:href => "/builder/#{@mrf.uuid}/misc", :data => {:transition => 'slide'}}='Misc'
+          %a{:href => "#misc", :data => {:transition => 'slide'}}='Misc'
       %div.row.submit.save_and_back
-        %button{:type => "submit", :value => "Save", :class => "button"}= 'Save'
-        %a{:href => "/mapreduce/#{@mrf.uuid}", :data => {:transition => 'slide', :role => 'button'}}= 'Execute'
+        %button{:type => "submit", :value => "Save", :class => "button"} Save
+        - unless @mrm.new?
+          %a{:href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button'}} Execute
+          %a{:href => "/builder/#{@mrm.uuid}/delete", :class => 'delete', :data => {:ajax => 'false', :role => 'button'}} Delete
 
-  %div{:data => {:role => 'content'}}
-    %form{:action => @mrf.uuid, :method => "delete", :class => 'builder', :data => {:transition => 'none'}}
-      %input{:type => "submit", :value => "Delete"}
+    = haml :_footer, :layout => false
 
-       
-  = haml :footer, :layout => false
+  - ["map", "reduce", "finalize"].each do |type|
+    %div.col{:id => type, :data => {:role => 'page'}}
+      = haml :_header_col, :layout => false, :locals => {:name => @mrm.name, :uuid => @mrm.uuid}
+      %div{:data => {:role => 'content'}}
+        %div.builder
+          = haml :_builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mrf.send(type.to_sym).keys}
+          = haml :_builder_col_emit_values, :locals => {:type => type, :emit_values => @mrf.send(type.to_sym).values}
+          = haml :_builder_col_code, :locals => {:type => type, :user_code => @mrf.send(type.to_sym).code, :generated_code => Marbu::Builder.new(@mrf).send(type.to_sym)}
+        / %div.row.submit.save_and_back
+        /   %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
+      = haml :_footer_col, :layout => false, :locals => {:uuid => @mrm.uuid}
+
+  = haml :_builder_misc, :layout => false

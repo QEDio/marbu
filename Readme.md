@@ -48,3 +48,13 @@ Install dependencies
 Run the tests
 
     $ rake
+
+Running the built-in Sinatra server can be done using the method above or using a standard config.ru file just like any other Rack-based app. Just make sure to provide the config file path through the corresponding environment variable:
+
+    $ MARBUCONFIG=bin/marbu-web-mongo-config.rb rackup
+  
+You can also activate the debugger and pick a specific server if you want:
+
+    $ MARBUCONFIG=bin/marbu-web-mongo-config.rb thin --debug --rackup config.ru start
+    
+    
