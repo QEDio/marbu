@@ -8,9 +8,10 @@ module Marbu
   class Server < Sinatra::Base
     configure :development do
       require 'ruby-debug'
+      enable :logging, :dump_errors, :raise_errors,
     end
 
-    enable :logging, :dump_errors, :raise_errorsm, :method_override
+    enable :method_override
 
     dir = File.dirname(File.expand_path(__FILE__))
     set :views, "#{dir}/server/views"
