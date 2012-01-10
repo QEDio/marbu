@@ -2,11 +2,11 @@
   = haml :_header, :layout => false
   %div{:data => {:role => 'content'}}
     %ul{:data => {:role => 'listview'}}
-      %a{:href => 'builder/new', :data => {:transition => 'slide', :role => 'button', :ajax => 'false'}}= "new"
+      %a{:href => '/builder/new', :data => {:transition => 'slide', :role => 'button', :ajax => 'false'}}= "new"
       - @mrms.each do |mrf|
         - uuid = mrf.uuid
         - name = mrf.name
         %li
-          %a{:href => 'builder/' + uuid, :data => {:transition => 'slide', :ajax => 'false'}}=name.capitalize
+          %a{:href => '/builder/' + uuid, :data => {:transition => 'slide', :ajax => 'false'}}=name.capitalize
 
   = haml :_footer, :layout => false
