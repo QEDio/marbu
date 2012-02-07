@@ -1,6 +1,7 @@
-%div{:id => 'misc', :data => {:role => 'page', :title => "Settings"}}
-  = haml :_header_col, :layout => false, :locals => {:title => "Settings"}
+%div{:id => 'misc', :data => {:role => 'page', :title => "Settings", "add-back-btn" => !@mrm.new? }}
+  = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce" : @mrm.name }
   %div{:data => {:role => 'content'}}
+    %h2 Settings
     .clearfix.row.add-remove-element
       .pair
         %label{:for => "name"} Name:
@@ -14,5 +15,6 @@
       .pair
         %label{:for => "output_collection"} Output Collection:
         %input{:type =>  "text", :name => "output_collection", :class => "text", :value => @mrf.misc.output_collection, :id => "output_collection"}
-
-  = haml :_footer_col, :layout => false, :locals => {:uuid => @mrm.uuid}
+    - if @mrm.new?
+      %a{:href => "#main", :data => {:role => "button", :icon => 'arrow-r', :iconpos => "right"}} Continue
+  = haml :_footer, :layout => false

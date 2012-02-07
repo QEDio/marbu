@@ -1,8 +1,7 @@
 %div{:id => 'root', :data => {:role => 'page'}}
-  = haml :_header, :layout => false, :locals => { :title => "Listing objects" }
+  = haml :_header, :layout => false, :locals => { :title => "Listing map reduce objects" }
   %div{:data => {:role => 'content'}}
     %ul{:data => {:role => 'listview'}}
-      %a{:href => '/builder/new', :data => {:transition => 'slide', :role => 'button', :ajax => 'false'}}= "new"
       - @mrms.each do |mrf|
         - uuid = mrf.uuid
         - name = mrf.name

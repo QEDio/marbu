@@ -1,31 +1,29 @@
 %form{:id => "builder_form", :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
   - unless @mrm.new?
     %input{:type => "hidden", :name => "_method", :value => "put"}
-  %div{:id => 'builder', :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}}
-    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : "Edit/Execute #{@mrm.name}"}
+  %div{:id => 'main', :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name}}
+    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name, :show_home => true, :show_settings => true}
     %div{:data => {:role => 'content'}}
       %ul{:data => {:role => 'listview'}}
         - ["map", "reduce", "finalize"].each do |type|
           %li
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
-      %div.row.submit.save_and_back
-        %button{:type => "submit", :value => "Save", :class => "button"} Save
-        - unless @mrm.new?
-          %a{:href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button'}} Execute
-          %a{:href => "/builder/#{@mrm.uuid}/delete", :class => 'delete', :data => {:ajax => 'false', :role => 'button'}} Delete
+      .row.submit.save_and_back
+        %button{:type => "submit", :value => "Save", :class => "button", :data => {:icon => 'check'}} Save
+        %a{:href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? "ui-disabled" : nil } Execute
+        %a{:href => "/builder/#{@mrm.uuid}/delete", :class =>  @mrm.new? ? "ui-disabled delete" : "delete", :data => {:ajax => 'false', :role => 'button', :icon => 'delete'}} Delete
 
     = haml :_footer, :layout => false
 
   - ["map", "reduce", "finalize"].each do |type|
-    %div.col{:id => type, :data => {:role => 'page', :title => type.capitalize}}
-      = haml :_header_col, :layout => false, :locals => {:title => type.capitalize}
+    %div.col{:id => type, :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name, "add-back-btn" => "true" }}
+      = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name }
       %div{:data => {:role => 'content'}}
-        %div.builder
+        %h2= type.capitalize
+        .builder
           = haml :_builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mrf.send(type.to_sym).keys}
           = haml :_builder_col_emit_values, :locals => {:type => type, :emit_values => @mrf.send(type.to_sym).values}
           = haml :_builder_col_code, :locals => {:type => type, :user_code => @mrf.send(type.to_sym).code, :generated_code => Marbu::Builder.new(@mrf).send(type.to_sym)}
-        / %div.row.submit.save_and_back
-        /   %button{:type => "submit", :value => "Save", :class => "button"}= 'Save and Back'
-      = haml :_footer_col, :layout => false, :locals => {:uuid => @mrm.uuid}
+      = haml :_footer, :layout => false
 
   = haml :_builder_misc, :layout => false
