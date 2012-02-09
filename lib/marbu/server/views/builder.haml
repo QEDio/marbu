@@ -9,9 +9,9 @@
           %li
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
       .row.submit.save_and_back
-        %button{:type => "submit", :value => "Save", :class => "button", :data => {:icon => 'check'}} Save
-        %a{:href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? "ui-disabled" : nil } Execute
-        %a{:href => "/builder/#{@mrm.uuid}/delete", :class =>  @mrm.new? ? "ui-disabled delete" : "delete", :data => {:ajax => 'false', :role => 'button', :icon => 'delete'}} Delete
+        %button{:id => 'button-save', :type => "submit", :value => "Save", :class => "button", :data => {:icon => 'check'}} Save
+        %a{:id => 'button-execute', :href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? "ui-disabled" : nil } Execute
+        %a{:id => 'button-delete', :href => "/builder/#{@mrm.uuid}/delete", :class =>  @mrm.new? ? "ui-disabled delete" : "delete", :data => {:ajax => 'false', :role => 'button', :icon => 'delete'}} Delete
 
     = haml :_footer, :layout => false
 
@@ -27,3 +27,9 @@
       = haml :_footer, :layout => false
 
   = haml :_builder_misc, :layout => false
+
+- unless @mrm.new?
+  :javascript
+  $(function() {
+    setTimeout(function() {$("#button-save").button("disable");}, 100);
+  });
