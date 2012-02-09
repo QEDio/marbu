@@ -1,3 +1,10 @@
+GIT
+  remote: git@github.com:QEDio/mongodb-testdata-factory.git
+  revision: 559939c214974ec87cf0c67a54f881eb255aa215
+  submodules: true
+  specs:
+    mongodb-testdata-factory (0.0.1)
+
 PATH
   remote: .
   specs:
@@ -92,6 +99,7 @@ DEPENDENCIES
   factory_girl
   i18n
   marbu!
+  mongodb-testdata-factory!
   rspec
   ruby-debug19
   simplecov

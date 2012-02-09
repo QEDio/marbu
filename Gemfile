@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-#gem "mongoid", :git => 'git@github.com:QEDio/mongoid.git'
+gem 'mongodb-testdata-factory', :git => 'git@github.com:QEDio/mongodb-testdata-factory.git', :submodules => true
 
 # Specify your gem's dependencies in marbu.gemspec
 gemspec
