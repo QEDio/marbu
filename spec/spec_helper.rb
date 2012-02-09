@@ -55,6 +55,7 @@ require 'marbu'
 require 'rspec'
 require 'factory_girl'
 require 'constants'
+require 'mongodb-testdata-factory'
 FactoryGirl.find_definitions
 
 RSpec.configure do |config|
