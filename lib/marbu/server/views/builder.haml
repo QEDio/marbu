@@ -2,9 +2,11 @@
   - unless @mrm.new?
     %input{:type => "hidden", :name => "_method", :value => "put"}
   %div{:id => 'main', :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name}}
-    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name, :show_home => true, :show_settings => true}
+    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name, :show_home => true}
     %div{:data => {:role => 'content'}}
       %ul{:data => {:role => 'listview'}}
+        %li
+          %a{:href => "#misc", :data => {:transition => 'slide'}} Settings
         - ["map", "reduce", "finalize"].each do |type|
           %li
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
