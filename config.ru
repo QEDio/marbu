@@ -9,6 +9,6 @@ require 'marbu/server'
 if ENV['MARBUCONFIG'] && ::File.exists?(::File.expand_path(ENV['MARBUCONFIG']))
   load ::File.expand_path(ENV['MARBUCONFIG'])
 end
-#
-#use Rack::ShowExceptions
-#run Marbu::Server.new
+
+use Rack::ShowExceptions
+run Marbu::Server.new
