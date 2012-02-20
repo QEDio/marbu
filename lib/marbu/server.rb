@@ -93,7 +93,7 @@ module Marbu
 
       uuid                      = params['uuid']
       if uuid
-        mrm                       = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
+        mrm                     = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
       else
         mrm = Marbu::Models::Db::MongoDb.new
       end
