@@ -4,9 +4,15 @@ module Marbu
       class MongoDb
         class Exception < StandardError
           REFERENCE_ERROR       = 'ReferenceError'
+          REGEX_DB_COMMAND = { :regex => /Database command '(.*?)'(.*?): \(errmsg: '(.+?)';/,
+                              :mapping => { :function => 5, :error_type => 8, :variable => 9, :assertion_code => 13, :error_message => 15 }}
+          REGEX_REF_ERROR = { :regex => /(.*?)'(.*?)'(.*?): \((assertion): '(.*?) (.*?): (.*?): (ReferenceError): (.*?)(is.*?)(nofile_b)?:\d'; (assertionCode): '(.*)';.*(errmsg): '(.*?)'/,
+                              :mapping => {}}
+          REGEXS = [ REGEX_DB_COMMAND, REGEX_REF_ERROR ]
 
           def self.explain(e)
-            parsed_exception = parse(e.to_s)
+            debugger
+            parsed_exception = parse(e)
 
             case parsed_exception[:error_type]
               when REFERENCE_ERROR then explain_reference_error(parsed_exception)
@@ -18,16 +24,16 @@ module Marbu
             parsed_exception = {}
             # http://rubular.com/r/MYM9ADhz4Z
             regex = /(.*?)'(.*?)'(.*?): \((assertion): '(.*?) (.*?): (.*?): (ReferenceError): (.*?)(is.*?)(nofile_b)?:\d'; (assertionCode): '(.*)';.*(errmsg): '(.*?)'/
+              e.result["errmsg"] =~ regex
 
-            e =~ regex
+              parsed_exception[:function]           = $5
+              parsed_exception[:error_type]         = $8
+              parsed_exception[:variable]           = $9
+              parsed_exception[:assertion_code]     = $13
+              parsed_exception[:error_message]      = $15
 
-            parsed_exception[:function]           = $5
-            parsed_exception[:error_type]         = $8
-            parsed_exception[:variable]           = $9
-            parsed_exception[:assertion_code]     = $13
-            parsed_exception[:error_message]      = $15
-
-            return parsed_exception
+              return parsed_exception
+            end
           end
 
           def self.explain_reference_error( parsed_exception )
