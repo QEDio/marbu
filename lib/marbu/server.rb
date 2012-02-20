@@ -74,11 +74,11 @@ module Marbu
         # TODO: naturally this has to take the DATABASE and COLLECTION from the mapreducefilter object
         # TODO: don;t take the parameters from the mapreducefilter object if DATABASE or DATABASE and COLLECTION are
         # TODo: defined in the configuration (security)
-        @res = @mrf.misc.collection.map_reduce( @builder.map, @builder.reduce,
+        @res = @mrf.misc.collection.map_reduce( @builder.map(:mongodb), @builder.reduce(:mongodb),
           {
             :query  => @builder.query,
             :out    => {:replace => "tmp."+@mrm.map_reduce_finalize.misc.output_collection},
-            :finalize => @builder.finalize
+            :finalize => @builder.finalize(:mongodb)
           }
         )
       rescue Mongo::OperationFailure => e

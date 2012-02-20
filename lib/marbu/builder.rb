@@ -17,16 +17,16 @@ module Marbu
       @formatter_clasz  = options[:formatter] || Marbu::Formatter::Dummy
     end
 
-    def map
-      @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map))
+    def map(format = :text)
+      @formatter_clasz.perform(@builder_clasz.map(@map_reduce_model.map, format))
     end
 
-    def reduce
-      @formatter_clasz.perform(@builder_clasz.reduce(@map_reduce_model.reduce))
+    def reduce(format = :text)
+      @formatter_clasz.perform(@builder_clasz.reduce(@map_reduce_model.reduce, format))
     end
 
-    def finalize
-      @formatter_clasz.perform(@builder_clasz.finalize(@map_reduce_model.finalize))
+    def finalize(format = :text)
+      @formatter_clasz.perform(@builder_clasz.finalize(@map_reduce_model.finalize, format))
     end
 
     def query
