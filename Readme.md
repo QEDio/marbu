@@ -57,4 +57,8 @@ You can also activate the debugger and pick a specific server if you want:
 
     $ MARBUCONFIG=bin/marbu-web-mongo-config.rb thin --debug --rackup config.ru start
     
+If you don't want to go through the pain of restarting your server every time you change some code:
+
+    $ MARBUCONFIG=bin/marbu-web-mongo-config.rb shotgun -p 3000 -s thin -d
+    
     
