@@ -1,36 +1,60 @@
 module Marbu
   class Builder
     class Mongodb
-      def self.map(map)
-        <<-JS.gsub(/[\n|\r]/,'')
-         function(){
-            #{get_value(:map)}
-            #{map.code.text}
-            #{get_emit(:map, map.values, map.keys)}
-          }
-        JS
+      def self.map(map, format)
+        case format
+          when :text then map_int(map)
+          when :mongodb then cleanup(map_int(map))
+        end
       end
 
-      def self.reduce(reduce)
-        <<-JS.gsub(/[\n|\r]/,'')
-          function(key,values){
-            #{get_value(:reduce)}
-            #{reduce.code.text}
-            #{get_emit(:reduce, reduce.values)}
-          }
-        JS
+      def self.reduce(reduce, format)
+        case format
+          when :text then self.reduce_int(reduce)
+          when :mongodb then cleanup(self.reduce_int(reduce))
+        end
       end
 
-      def self.finalize(finalize)
-      <<-JS.gsub(/[\n|\r]/,'')
-        function(key, value){
-          #{finalize.code.text}
-          #{get_emit(:finalize, finalize.values)}
-        }
-      JS
-    end
+
+      def self.finalize(finalize, format)
+        case format
+          when :text then self.finalize_int(finalize)
+          when :mongodb then cleanup(self.finalize_int(finalize))
+        end
+      end
 
       private
+        def self.map_int(map)
+          <<-JS
+function(){
+  #{get_value(:map)}
+  #{map.code.text}
+  #{get_emit(:map, map.values, map.keys)}
+}
+JS
+        end
+        def self.reduce_int(reduce)
+          <<-JS
+function(key,values){
+  #{get_value(:reduce)}
+  #{reduce.code.text}
+  #{get_emit(:reduce, reduce.values)}
+}
+JS
+        end
+        def self.finalize_int(finalize)
+          <<-JS
+function(key, value){
+  #{finalize.code.text}
+  #{get_emit(:finalize, finalize.values)}
+}
+JS
+        end
+
+        def self.cleanup(code)
+          code.gsub!(/[\n|\r]/,'')
+        end
+
         def self.get_value(function)
           case function
             when :map        then "value=this.value;"
