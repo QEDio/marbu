@@ -2,7 +2,7 @@ module Marbu
   class Builder
     class Mongodb
       def self.map(map)
-        <<-JS
+        <<-JS.gsub(/[\n|\r]/,'')
          function(){
             #{get_value(:map)}
             #{map.code.text}
@@ -12,7 +12,7 @@ module Marbu
       end
 
       def self.reduce(reduce)
-        <<-JS
+        <<-JS.gsub(/[\n|\r]/,'')
           function(key,values){
             #{get_value(:reduce)}
             #{reduce.code.text}
@@ -22,7 +22,7 @@ module Marbu
       end
 
       def self.finalize(finalize)
-      <<-JS
+      <<-JS.gsub(/[\n|\r]/,'')
         function(key, value){
           #{finalize.code.text}
           #{get_emit(:finalize, finalize.values)}

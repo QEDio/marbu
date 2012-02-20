@@ -73,6 +73,8 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
+    shotgun (0.9)
+      rack (>= 1.0)
     simplecov (0.5.4)
       multi_json (~> 1.0.3)
       simplecov-html (~> 0.5.3)
@@ -108,6 +110,7 @@ DEPENDENCIES
   mongodb-testdata-factory!
   rspec
   ruby-debug19
+  shotgun
   simplecov
   spork
   spork-testunit

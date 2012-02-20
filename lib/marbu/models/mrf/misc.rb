@@ -56,6 +56,10 @@ module Marbu
           :filter_data        => filter_data
         }.delete_if{|k,v|v.blank?}
       end
+
+      def collection
+        Marbu.connection.db(database).collection(input_collection)
+      end
     end
   end
 end
