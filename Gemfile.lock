@@ -33,7 +33,9 @@ GEM
     bson_ext (1.5.1)
     builder (3.0.0)
     columnize (0.3.6)
+    daemons (1.1.6)
     diff-lcs (1.1.3)
+    eventmachine (0.12.10)
     factory_girl (2.3.2)
       activesupport
     haml (3.1.4)
@@ -83,6 +85,10 @@ GEM
     spork-testunit (0.0.7)
       spork (>= 0.6.0)
     systemu (2.4.1)
+    thin (1.3.1)
+      daemons (>= 1.0.9)
+      eventmachine (>= 0.12.6)
+      rack (>= 1.0.0)
     tilt (1.3.3)
     turn (0.8.3)
       ansi
@@ -105,4 +111,5 @@ DEPENDENCIES
   simplecov
   spork
   spork-testunit
+  thin
   turn
