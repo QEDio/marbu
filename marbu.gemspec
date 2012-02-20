@@ -27,5 +27,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'mongoid'
   s.add_runtime_dependency 'bson_ext'
   s.add_runtime_dependency 'uuid'
-
 end
