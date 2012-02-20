@@ -82,7 +82,9 @@ module Marbu
           }
         )
       rescue Mongo::OperationFailure => e
-        @error = Marbu::Models::Db::MongoDb::Exception.explain(e)
+        @parsed_error = Marbu::Models::Db::MongoDb::Exception.explain(e, @mrf)
+        @error        = @parsed_error[:message]
+        @fix_link     = Marbu::Models::ExceptionLink.get_exception_fix_link(@parsed_error[:id], params['uuid'])
       end
 
       show 'mapreduce'
