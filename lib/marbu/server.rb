@@ -75,14 +75,16 @@ module Marbu
         # TODO: don;t take the parameters from the mapreducefilter object if DATABASE or DATABASE and COLLECTION are
         # TODo: defined in the configuration (security)
         @res = @mrf.misc.collection.map_reduce( @builder.map(:mongodb), @builder.reduce(:mongodb),
-          {
-            :query  => @builder.query,
-            :out    => {:replace => "tmp."+@mrm.map_reduce_finalize.misc.output_collection},
-            :finalize => @builder.finalize(:mongodb)
-          }
+                                                {
+                                                    :query  => @builder.query,
+                                                    :out    => {:replace => "tmp."+@mrm.map_reduce_finalize.misc.output_collection},
+                                                    :finalize => @builder.finalize(:mongodb)
+                                                }
         )
       rescue Mongo::OperationFailure => e
-        @error = Marbu::Models::Db::MongoDb::Exception.explain(e)
+        @parsed_error = Marbu::Models::Db::MongoDb::Exception.explain(e, @mrf)
+        @error        = @parsed_error[:message]
+        @fix_link     = Marbu::Models::ExceptionLink.get_exception_fix_link(@parsed_error[:id], params['uuid'])
       end
 
       show 'mapreduce'
@@ -101,23 +103,23 @@ module Marbu
       mrf                       = mrm.map_reduce_finalize
 
       mrf.map                   = Marbu::Models::Map.new(
-                                      :code => {:text => params['map_code']}
-                                    )
+          :code => {:text => params['map_code']}
+      )
       mrf.reduce                = Marbu::Models::Reduce.new(
-                                      :code => {:text => params['reduce_code']}
-                                    )
+          :code => {:text => params['reduce_code']}
+      )
       mrf.finalize              = Marbu::Models::Finalize.new(
-                                      :code => {:text => params['finalize_code']}
-                                    )
+          :code => {:text => params['finalize_code']}
+      )
       mrf.query                 = Marbu::Models::Query.new(
-                                        :condition    => params['query_condition'],
-                                        :force_query  => params['query_force_query']
-                                    )
+          :condition    => params['query_condition'],
+          :force_query  => params['query_force_query']
+      )
       mrf.misc                  = Marbu::Models::Misc.new(
-                                        :database           => params['database'],
-                                        :input_collection   => params['input_collection'],
-                                        :output_collection  => params['output_collection']
-                                    )
+          :database           => params['database'],
+          :input_collection   => params['input_collection'],
+          :output_collection  => params['output_collection']
+      )
 
       # add params to map_new, reduce_new, finalize_new
       ['map', 'reduce', 'finalize'].each do |stage|
