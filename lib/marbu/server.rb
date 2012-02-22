@@ -1,4 +1,5 @@
 require 'sinatra/base'
+require 'sinatra/reloader'
 require 'haml'
 require 'time'
 require 'marbu'
@@ -8,7 +9,8 @@ module Marbu
   class Server < Sinatra::Base
     configure :development do
       require 'ruby-debug'
-      enable :logging, :dump_errors, :raise_errors,
+      enable :logging, :dump_errors, :raise_errors
+      register Sinatra::Reloader
     end
 
     enable :method_override
