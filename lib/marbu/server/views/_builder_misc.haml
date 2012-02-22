@@ -1,4 +1,4 @@
-%div{:id => 'misc', :data => {:role => 'page', :title => "Settings", "add-back-btn" => !@mrm.new? }}
+%div{:id => 'misc', :data => {:role => 'page', :title => "Settings"}}
   = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce" : @mrm.name }
   %div{:data => {:role => 'content'}}
     %h2 Settings

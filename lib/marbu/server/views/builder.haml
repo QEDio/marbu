@@ -12,13 +12,13 @@
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
       .row.submit.save_and_back
         %button{:id => 'button-save', :type => "submit", :value => "Save", :class => "button", :data => {:icon => 'check'}} Save
-        %a{:id => 'button-execute', :href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search', :ajax => 'false'}, :class =>  @mrm.new? ? "ui-disabled" : nil } Execute
+        %a{:id => 'button-execute', :href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? "ui-disabled" : nil } Execute
         %a{:id => 'button-delete', :href => "/builder/#{@mrm.uuid}/delete", :class =>  @mrm.new? ? "ui-disabled delete" : "delete", :data => {:ajax => 'false', :role => 'button', :icon => 'delete'}} Delete
 
     = haml :_footer, :layout => false
 
   - ["map", "reduce", "finalize"].each do |type|
-    %div.col{:id => type, :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name, "add-back-btn" => "true" }}
+    %div.col{:id => type, :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name}}
       = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name }
       %div{:data => {:role => 'content'}}
         %h2= type.capitalize

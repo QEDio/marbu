@@ -1,4 +1,6 @@
 %div.header{:data=>{:position=>'fixed', :role => 'header'}}
   - if defined?(show_home)
     %a{ :href => "/", :data => {:role => "button", :icon => "home", :ajax => 'false'}, :class => 'ui-btn-left'} Home
+  - else
+    %a{ :href => "#main", :data => {:role => "button", :icon => "grid", :transition => 'reverse slide'}, :class => 'ui-btn-left'} Main
   %h1= title
