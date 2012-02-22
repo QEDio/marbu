@@ -29,6 +29,16 @@ module Marbu
       def path_prefix
         request.env['SCRIPT_NAME']
       end
+
+      def document_list(document)
+        document.inject("") do |html, (key, value)|
+          if( value.is_a?(Hash) )
+            html += "<li>#{key}<ul>#{document_list(value)}</ul></li>"
+          else
+            html += "<li>#{key}: #{value}</li>"
+          end
+        end
+      end
     end
 
     get "/" do

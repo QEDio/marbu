@@ -1,6 +1,7 @@
 %a{:data => {:role => 'button', :type => 'pulldown'}} Sample Data
 .pulldown
-  - data_samples.each_with_index do |value, i|
+  - data_samples.each_with_index do |document, i|
     .clearfix.row
       .pair
-        = value.to_s
+        %ul{:data => {:role => 'listview'}}
+          = document_list(document)
