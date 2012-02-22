@@ -1,0 +1,6 @@
+%a{:data => {:role => 'button', :type => 'pulldown'}} Sample Data
+.pulldown
+  - data_samples.each_with_index do |value, i|
+    .clearfix.row
+      .pair
+        = value.to_s

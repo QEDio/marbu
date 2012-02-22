@@ -49,8 +49,10 @@ module Marbu
     end
 
     get "/builder/:uuid" do
-      @mrm        = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
-      @mrf        = @mrm.map_reduce_finalize
+      @mrm          = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrf          = @mrm.map_reduce_finalize
+      @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)
+
       show 'builder'
     end
 

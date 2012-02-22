@@ -23,6 +23,7 @@
       %div{:data => {:role => 'content'}}
         %h2= type.capitalize
         .builder
+          = haml :_builder_data_samples, :locals => {:data_samples => @data_samples}
           = haml :_builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mrf.send(type.to_sym).keys}
           = haml :_builder_col_emit_values, :locals => {:type => type, :emit_values => @mrf.send(type.to_sym).values}
           = haml :_builder_col_code, :locals => {:type => type, :user_code => @mrf.send(type.to_sym).code, :generated_code => Marbu::Builder.new(@mrf).send(type.to_sym)}

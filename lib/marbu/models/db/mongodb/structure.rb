@@ -12,6 +12,15 @@ module Marbu
             get_collection_structure_int(document)
           end
 
+          def self.get_first_and_last_document( collection_info )
+            raise "collection_info needs to be Marbu::Models::Misc, but is: #{collection_info.class}" unless collection_info.is_a?(Marbu::Models::Misc)
+
+            collection  = collection_info.collection
+
+            [collection.find().sort([['_id', 1]]).first(), collection.find().sort([['_id', -1]]).first()]
+          end
+
+
           private
             def self.get_collection_structure_int(document)
               {}.tap do |hsh|
