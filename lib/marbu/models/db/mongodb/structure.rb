@@ -4,7 +4,7 @@ module Marbu
       class MongoDb
         class Structure
           def self.get_collection_structure( collection_info )
-            raise "collection_info needs to be Marbu::Models::Misc, but is: #{collection_info.class}"
+            raise "collection_info needs to be Marbu::Models::Misc, but is: #{collection_info.class}" unless collection_info.is_a?(Marbu::Models::Misc)
 
             collection  = collection_info.collection
             document    = collection.find().first()
