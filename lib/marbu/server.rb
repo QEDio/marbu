@@ -144,13 +144,6 @@ module Marbu
         end
       end
 
-      # TODO:
-      # copy keys and values from map to reduce block
-      # copy keys from  map to finalize block
-      # reduce_new.keys       = mrf.map.keys
-      # reduce_new.values     = mrf.map.values
-      # finalize_new.keys     = mrf.map.keys
-
       mrm.map_reduce_finalize = mrf
       return mrm
     end
