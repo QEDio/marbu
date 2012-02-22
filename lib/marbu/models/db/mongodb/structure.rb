@@ -9,17 +9,17 @@ module Marbu
             collection  = collection_info.collection
             document    = collection.find().first()
 
-
+            get_collection_structure_int(document)
           end
 
           private
-            def self.get_collection_structure_int(document, structure)
-              [].tap do |arr|
+            def self.get_collection_structure_int(document)
+              {}.tap do |hsh|
                 document.each_pair do |key, value|
                   if( value.is_a?(Hash) )
-                    arr[key] = get_collection_structure_int(value)
+                    hsh[key] = get_collection_structure_int(value)
                   else
-                    arr[key] = nil
+                    hsh[key] = key
                   end
                 end
               end
