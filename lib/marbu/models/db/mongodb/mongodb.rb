@@ -30,7 +30,12 @@ module Marbu
                 :keys => [{:name => "map_key1"}],
                 :values => [{:name => "map_value1"}]
               },
+              :reduce => {
+                :keys => [{:name => "reduce_key1"}],
+                :values => [{:name => "reduce_value1"}]
+              },
               :finalize => {
+                :keys => [{:name => "finalize_key1"}],
                 :values => [{:name => "finalize"}]
               },
               :misc => {
