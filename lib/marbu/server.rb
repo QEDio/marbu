@@ -50,6 +50,7 @@ module Marbu
           else
             html += '<a data-role="button" data-rel="back" data-type="sample_data" data-input="' + input_id + '" data-content="' + key + '">'
             html += key.to_s
+            html += '<span class="example">(example: ' + value.to_s + ')</span>';
             html += '</a>';
           end
         end

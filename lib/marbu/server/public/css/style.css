@@ -117,3 +117,9 @@ a[data-type="pulldown"] {
 #sample_data .ui-collapsible-content {
   padding-left:   30px;
 }
+
+#sample_data a .example {
+  font-weight:  normal;
+  margin-left:  10px;
+  font-size:    .7em;
+}
