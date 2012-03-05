@@ -6,6 +6,8 @@
         %div.pair
           %label{:for => "#{type}_key_#{i}"} Emit-Key:
           %input{:type =>  "text", :name => "#{type}_key_name[]", :class => "text", :value => key.name, :id => "#{type}_key_#{i}"}
+          %a{:href => "/builder/sample_data/#{params[:uuid]}/#{type}_key_#{i}", :data => {:rel => 'dialog', :transition => 'flip', :corners => 'true', :shadow => 'true', :wrapperels => 'span', :role => 'button', :inline => 'true'}}
+            = 'Sample Data'
         %div.pair
           %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
           %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}

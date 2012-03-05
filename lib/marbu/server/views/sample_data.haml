@@ -1,0 +1,12 @@
+%div#sample_data{:data => {:role => 'dialog'}}
+  %div{:data => {:role => 'header'}}
+    %h1='Sample data'
+
+  %div{:data => {:role => 'content'}}
+    - if @data_samples.present?
+      %div.tree
+        - @data_samples.each_with_index do |document, i|
+          = sample_data_tree(document, params[:input_id])
+
+    %a{:data => {:rel => 'back', :role => 'button'}}
+      ='Back'

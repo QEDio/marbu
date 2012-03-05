@@ -1,7 +1,8 @@
-%a{:data => {:role => 'button', :type => 'pulldown'}} Sample Data
-.pulldown
-  - data_samples.each_with_index do |document, i|
-    .clearfix.row
-      .pair
-        %ul{:data => {:role => 'listview'}}
-          = document_list(document)
+- if data_samples.present?
+  %a{:data => {:role => 'button', :type => 'pulldown'}} Sample Data
+  .pulldown
+    - data_samples.each_with_index do |document, i|
+      .clearfix.row
+        .pair
+          %ul{:data => {:role => 'listview'}}
+            = document_list(document)

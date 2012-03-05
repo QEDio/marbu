@@ -39,6 +39,22 @@ module Marbu
           end
         end
       end
+
+      def sample_data_tree(document, input_id)
+        document.inject('') do |html, (key, value)|
+          if (value.is_a?(Hash))
+            html += '<div data-role="collapsible" data-collapsed="true" data-content="' + key + '">'
+            html += '<h3> ' + key + '</h3>'
+            html += sample_data_tree(value, input_id)
+            html +='</div>'
+          else
+            html += '<a data-role="button" data-rel="back" data-type="sample_data" data-input="' + input_id + '" data-content="' + key + '">'
+            html += key.to_s
+            html += '</a>';
+          end
+        end
+      end
+
     end
 
     get "/" do
@@ -50,6 +66,13 @@ module Marbu
       @mrm              = Marbu::Models::Db::MongoDb.new
       @mrf              = @mrm.map_reduce_finalize
       show 'builder'
+    end
+
+    get '/builder/sample_data/:uuid/:input_id' do
+      @mrm          = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
+      @mrf          = @mrm.map_reduce_finalize
+      @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)
+      show 'sample_data'
     end
 
     post "/builder" do
