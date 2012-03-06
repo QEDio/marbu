@@ -48,7 +48,7 @@ module Marbu
             html += sample_data_tree(value, input_id)
             html +='</div>'
           else
-            html += '<a data-role="button" data-rel="back" data-type="sample_data" data-input="' + input_id + '" data-key="' + key + '" data-value="' + value.to_s + '">'
+            html += '<a data-role="button" data-type="sample_data" data-input="' + input_id + '" data-key="' + key + '" data-value="' + value.to_s + '">'
             html += key.to_s
             html += '<span class="example">(example: ' + value.to_s + ')</span>';
             html += '</a>';
