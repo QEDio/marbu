@@ -118,6 +118,10 @@ a[data-type="pulldown"] {
   text-align: left;
 }
 
+#sample_data .ui-content .ui-btn.tablink {
+  display:  inline-block;
+}
+
 #sample_data .ui-collapsible-heading {
   margin: 0;
 }
@@ -130,6 +134,14 @@ a[data-type="pulldown"] {
   font-weight:  normal;
   margin-left:  10px;
   font-size:    .7em;
+}
+
+#sample_data .tree {
+  display:  none;
+}
+
+#sample_data #sample_data_param_1 {
+  display:  block;
 }
 
 .add_remove_button_wrapper > * {

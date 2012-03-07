@@ -4,8 +4,13 @@
 
   %div{:data => {:role => 'content'}}
     - if @data_samples.present?
-      %div.tree
-        - @data_samples.each_with_index do |document, i|
+      %a{:href => "#sample_data_param_1", :class => 'tablink', :data => {:role => 'button'}}
+        Param 1
+      %a{:href => "#sample_data_param_2", :class => 'tablink', :data => {:role => 'button'}}
+        Param 2
+      - @data_samples.each_with_index do |document, i|
+        %div.tree{:id => "sample_data_param_#{i+1}"}
+          %h3="param_#{i+1}"
           = sample_data_tree(document, params[:input_id])
 
     %a{:data => {:rel => 'back', :role => 'button'}}
