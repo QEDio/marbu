@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+
 $:.push File.expand_path("../lib", __FILE__)
 require "marbu/version"
 
@@ -11,6 +12,9 @@ Gem::Specification.new do |s|
   s.homepage    = ""
   s.summary     = %q{MA(p) R(educe) BU(ilder)}
   s.description = %q{Integrate fancy MapReduce Bulding functionality with one gem install}
+  s.files += Dir.glob("lib/**/*")
+  s.files += Dir.glob("bin/**/*")
+  s.executables = [ "marbu-web" ]
 
   s.rubyforge_project = "marbu"
 

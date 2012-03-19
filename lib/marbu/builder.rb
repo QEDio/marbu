@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 module Marbu
   # the builder class is a lightweight container that holds a MapReduceModel and the requester Builder class
   # its basically a front for the internals of the builders

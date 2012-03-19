@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 require 'sinatra'
 require 'marbu'
 Marbu.port = '27017'
