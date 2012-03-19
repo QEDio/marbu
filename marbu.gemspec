@@ -10,13 +10,17 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Johannes Kaefer"]
   s.email       = ["jak4@qed.io"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/QEDio/marbu"
   s.summary     = %q{MA(p) R(educe) BU(ilder)}
   s.description = %q{Integrate fancy MapReduce Bulding functionality with one gem install}
 
   s.files             = %w( Readme.md Rakefile )
-  s.files             += Dir.glob("lib/*")
-  s.files             += Dir.glob("bin/*")
+
+  s.files += Dir.glob("lib/**/*")
+  s.files += Dir.glob("bin/**/*")
+  s.files += Dir.glob("man/**/*")
+  s.files += Dir.glob("spec/**/*")
+
   s.executables       = [ "marbu-web" ]
 
   #s.files         = `git ls-files`.split("\n")
