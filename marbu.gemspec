@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-$:.push File.expand_path("../lib", __FILE__)
+#$:.push File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift 'lib'
 require "marbu/version"
 
 Gem::Specification.new do |s|
@@ -13,10 +14,10 @@ Gem::Specification.new do |s|
   s.summary     = %q{MA(p) R(educe) BU(ilder)}
   s.description = %q{Integrate fancy MapReduce Bulding functionality with one gem install}
 
-  s.files += Dir.glob("lib/**/*")
-  s.files += Dir.glob("bin/**/*")
-
-  s.executables = [ "marbu-web" ]
+  s.files             = %w( README.md Rakefile )
+  s.files             += Dir.glob("lib/**/*")
+  s.files             += Dir.glob("bin/**/*")
+  s.executables       = [ "marbu-web" ]
 
   #s.files         = `git ls-files`.split("\n")
   #s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
