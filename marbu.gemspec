@@ -12,15 +12,15 @@ Gem::Specification.new do |s|
   s.homepage    = ""
   s.summary     = %q{MA(p) R(educe) BU(ilder)}
   s.description = %q{Integrate fancy MapReduce Bulding functionality with one gem install}
+
   s.files += Dir.glob("lib/**/*")
   s.files += Dir.glob("bin/**/*")
+
   s.executables = [ "marbu-web" ]
 
-  s.rubyforge_project = "marbu"
-
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  #s.files         = `git ls-files`.split("\n")
+  #s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  #s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency 'rake'
