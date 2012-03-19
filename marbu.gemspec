@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.description = %q{Integrate fancy MapReduce Bulding functionality with one gem install}
 
   s.files             = %w( Readme.md Rakefile )
-  s.files             += Dir.glob("lib/**/*")
-  s.files             += Dir.glob("bin/**/*")
+  s.files             += Dir.glob("lib/*")
+  s.files             += Dir.glob("bin/*")
   s.executables       = [ "marbu-web" ]
 
   #s.files         = `git ls-files`.split("\n")
