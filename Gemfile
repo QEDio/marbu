@@ -17,6 +17,5 @@ end
 group :development do
   gem 'i18n'
   gem 'ruby-debug19'
-  gem 'sinatra-contrib'
   gem 'thin'
 end
