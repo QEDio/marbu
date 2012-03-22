@@ -17,15 +17,15 @@
 
     = haml :_footer, :layout => false
 
-  - ['map', 'reduce', 'finalize'].each do |type|
-    %div.col{:id => type, :data => {:role => 'page', :title => @mrm.new? ? 'New map reduce object' : @mrm.name}}
+  - ['map', 'reduce', 'finalize'].each do |method|
+    %div.col{:id => method, :data => {:role => 'page', :title => @mrm.new? ? 'New map reduce object' : @mrm.name}}
       = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? 'New map reduce object' : @mrm.name }
       %div{:data => {:role => 'content'}}
-        %h2= type.capitalize
+        %h2= method.capitalize
         .builder
-          = haml :_builder_col_emit_keys, :locals => {:type => type, :emit_keys => @mrf.send(type.to_sym).keys}
-          = haml :_builder_col_emit_values, :locals => {:type => type, :emit_values => @mrf.send(type.to_sym).values}
-          = haml :_builder_col_code, :locals => {:type => type, :user_code => @mrf.send(type.to_sym).code, :generated_code => Marbu::Builder.new(@mrf).send(type.to_sym)}
+          = haml :_builder_col_emit_keys, :locals => {:method => method, :emit_keys => @mrf.send(method.to_sym).keys}
+          = haml :_builder_col_emit_values, :locals => {:method => method, :emit_values => @mrf.send(method.to_sym).values}
+          = haml :_builder_col_code, :locals => {:method => method, :user_code => @mrf.send(method.to_sym).code, :generated_code => Marbu::Builder.new(@mrf).send(method.to_sym)}
       = haml :_footer, :layout => false
 
   = haml :_builder_misc, :layout => false

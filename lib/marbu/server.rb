@@ -42,15 +42,15 @@ module Marbu
         end
       end
 
-      def sample_data_tree(document, type)
+      def sample_data_tree(document, method, type)
         document.inject('') do |html, (key, value)|
           if (value.is_a?(Hash))
             html += '<div data-role="collapsible" data-collapsed="true" data-key="' + key + '">'
             html += '<h3> ' + key + '</h3>'
-            html += sample_data_tree(value, type)
+            html += sample_data_tree(value, method, type)
             html +='</div>'
           else
-            html += '<a data-role="button" data-type="sample_data" data-input="' + type + '" data-key="' + key + '" data-value="' + value.to_s + '">'
+            html += '<a data-role="button" data-type="sample_data" data-input="' + method + '_' + type + '_0' + '" data-key="' + key + '" data-value="' + value.to_s + '">'
             html += key.to_s
             html += '<span class="example">(example: ' + value.to_s + ')</span>';
             html += '</a>';
@@ -70,7 +70,7 @@ module Marbu
       show 'builder'
     end
 
-    get '/builder/:uuid/sample_data/:type' do
+    get '/builder/:uuid/sample_data/:method' do
       @mrm          = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrf          = @mrm.map_reduce_finalize
       @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)

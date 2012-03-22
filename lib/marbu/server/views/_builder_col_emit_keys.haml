@@ -1,13 +1,13 @@
-- if not type.eql?('reduce')
+- if not method.eql?('reduce')
   %a{:data => {:role => 'button', :type => 'pulldown'}} Emit-Keys/Emit-Key-Functions
   - emit_keys.each_with_index do |key, i|
     .add-remove.pulldown
       .clearfix.row.add-remove-element
         %div.pair
-          %label{:for => "#{type}_key_#{i}"} Emit-Key:
-          %input{:type =>  "text", :name => "#{type}_key_name[]", :class => "text", :value => key.name, :id => "#{type}_key_#{i}"}
-          %a{:href => "/builder/#{params[:uuid]}/sample_data/#{type}", :class => 'sample_data', :data => {:rel => 'dialog', :transition => 'flip', :corners => 'true', :shadow => 'true', :wrapperels => 'span', :role => 'button', :inline => 'true'}}
+          %label{:for => "#{method}_key_#{i}"} Emit-Key:
+          %input{:type =>  'text', :name => "#{method}_key_name[]", :class => 'text', :value => key.name, :id => "#{method}_key_#{i}"}
+          %a{:href => "/builder/#{params[:uuid]}/sample_data/#{method}?type=key", :class => 'sample_data', :data => {:rel => 'dialog', :transition => 'flip', :corners => 'true', :shadow => 'true', :wrapperels => 'span', :role => 'button', :inline => 'true'}}
             = 'Sample Data'
         %div.pair
-          %label{:for => "#{type}_key_function_#{i}"} Emit-Key-Function:
-          %input{:type =>  "text", :name => "#{type}_key_function[]", :class => "text", :value => key.function, :id => "#{type}_key_function_#{i}"}
+          %label{:for => "#{method}_key_function_#{i}"} Emit-Key-Function:
+          %input{:type =>  'text', :name => "#{method}_key_function[]", :class => 'text', :value => key.function, :id => "#{method}_key_function_#{i}"}

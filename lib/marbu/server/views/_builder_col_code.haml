@@ -1,8 +1,8 @@
 %a{:data => {:role => 'button', :type => 'pulldown'}} Your Javascript-Code
 .clearfix.row.pulldown
-  %label{:for => "code"} Your Javascript-Code:
-  %textarea{:type =>  "text", :name => "#{type}_code", :class => "text", :rows => 10, :cols => 50}= user_code.text
-%a{:data => {:role => 'button', :type => 'pulldown'}} MR-Code for #{type}
+  %label{:for => 'code'} Your Javascript-Code:
+  %textarea{:type =>  'text', :name => "#{method}_code", :class => 'text', :rows => 10, :cols => 50}= user_code.text
+%a{:data => {:role => 'button', :type => 'pulldown'}} MR-Code for #{method}
 .clearfix.row.pulldown
-  %label{:for => "code_#{type}"} MR-Code for #{type}:
-  %textarea{:type => "text", :name => "key1", :class => "text", :rows => 10, :cols => 50, :readonly => 'readonly', :id => "code_#{type}"}= generated_code
+  %label{:for => "code_#{method}"} MR-Code for #{method}:
+  %textarea{:type => 'text', :name => 'key1', :class => 'text', :rows => 10, :cols => 50, :readonly => 'readonly', :id => "code_#{method}"}= generated_code
