@@ -50,7 +50,7 @@ module Marbu
             html += sample_data_tree(value, method, type)
             html +='</div>'
           else
-            html += '<a data-role="button" data-type="sample_data" data-input="' + method + '_' + type + '_0' + '" data-key="' + key + '" data-value="' + value.to_s + '">'
+            html += '<a data-role="button" data-type="sample_data" data-input="' + method + '_' + type + '_0' + '" data-key="' + key.to_s + '" data-value="' + value.to_s + '">'
             html += key.to_s
             html += '<span class="example">(example: ' + value.to_s + ')</span>';
             html += '</a>';
@@ -73,7 +73,17 @@ module Marbu
     get '/builder/:uuid/sample_data/:method' do
       @mrm          = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrf          = @mrm.map_reduce_finalize
-      @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)
+
+      if( params[:method].eql?('map'))
+        @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)
+      elsif( params[:method].eql?('reduce'))
+        @data_samples = [@mrf.map.values,@mrf.map.values]
+      elsif( params[:method].eql?('finalize'))
+        @data_samples = [@mrf.reduce.values,@mrf.reduce.values]
+      else
+        raise 'Unknown'
+      end
+
       show 'sample_data'
     end
 

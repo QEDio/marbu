@@ -96,6 +96,10 @@ module Marbu
       def blank?
         !present?
       end
+
+      def to_s
+        name
+      end
     end
 
     class Key < KeyValueBase
