@@ -42,49 +42,48 @@ module Marbu
         end
       end
 
-      def sample_data_tree(document, input_id)
+      def sample_data_tree(document, type)
         document.inject('') do |html, (key, value)|
           if (value.is_a?(Hash))
             html += '<div data-role="collapsible" data-collapsed="true" data-key="' + key + '">'
             html += '<h3> ' + key + '</h3>'
-            html += sample_data_tree(value, input_id)
+            html += sample_data_tree(value, type)
             html +='</div>'
           else
-            html += '<a data-role="button" data-type="sample_data" data-input="' + input_id + '" data-key="' + key + '" data-value="' + value.to_s + '">'
+            html += '<a data-role="button" data-type="sample_data" data-input="' + type + '" data-key="' + key + '" data-value="' + value.to_s + '">'
             html += key.to_s
             html += '<span class="example">(example: ' + value.to_s + ')</span>';
             html += '</a>';
           end
         end
       end
-
     end
 
-    get "/" do
+    get '/' do
       @mrms = Marbu::Models::Db::MongoDb.all
       show 'root'
     end
 
-    get "/builder/new" do
+    get '/builder/new' do
       @mrm              = Marbu::Models::Db::MongoDb.new
       @mrf              = @mrm.map_reduce_finalize
       show 'builder'
     end
 
-    get '/builder/sample_data/:uuid/:input_id' do
+    get '/builder/:uuid/sample_data/:type' do
       @mrm          = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrf          = @mrm.map_reduce_finalize
       @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)
       show 'sample_data'
     end
 
-    post "/builder" do
+    post '/builder' do
       @mrm                  = build_mrm_from_params(params.merge({:logger => logger}))
       @mrm.save!
       redirect "/builder/#{@mrm.uuid}"
     end
 
-    get "/builder/:uuid" do
+    get '/builder/:uuid' do
       @mrm          = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrf          = @mrm.map_reduce_finalize
       @data_samples = Marbu::Models::Db::MongoDb::Structure.get_first_and_last_document(@mrf.misc)
@@ -92,19 +91,19 @@ module Marbu
       show 'builder'
     end
 
-    put "/builder/:uuid" do
+    put '/builder/:uuid' do
       @mrm                  = build_mrm_from_params(params.merge({:logger => logger}))
       @mrm.save!
       redirect "/builder/#{@mrm.uuid}"
     end
 
-    delete "/builder/:uuid" do
+    delete '/builder/:uuid' do
       @mrm = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrm.destroy if @mrm.present?
-      redirect "/"
+      redirect '/'
     end
 
-    get "/mapreduce/:uuid" do
+    get '/mapreduce/:uuid' do
       @mrm         = Marbu::Models::Db::MongoDb.first(conditions: {uuid: params['uuid']})
       @mrf         = @mrm.map_reduce_finalize
       @builder     = Marbu::Builder.new(@mrf)
@@ -143,23 +142,23 @@ module Marbu
       mrf                       = mrm.map_reduce_finalize
 
       mrf.map                   = Marbu::Models::Map.new(
-          :code => {:text => params['map_code']}
-      )
+                                    :code => {:text => params['map_code']}
+                                  )
       mrf.reduce                = Marbu::Models::Reduce.new(
-          :code => {:text => params['reduce_code']}
-      )
+                                    :code => {:text => params['reduce_code']}
+                                  )
       mrf.finalize              = Marbu::Models::Finalize.new(
-          :code => {:text => params['finalize_code']}
-      )
+                                    :code => {:text => params['finalize_code']}
+                                  )
       mrf.query                 = Marbu::Models::Query.new(
-          :condition    => params['query_condition'],
-          :force_query  => params['query_force_query']
-      )
+                                    :condition    => params['query_condition'],
+                                    :force_query  => params['query_force_query']
+                                  )
       mrf.misc                  = Marbu::Models::Misc.new(
-          :database           => params['database'],
-          :input_collection   => params['input_collection'],
-          :output_collection  => params['output_collection']
-      )
+                                    :database           => params['database'],
+                                    :input_collection   => params['input_collection'],
+                                    :output_collection  => params['output_collection']
+                                  )
 
       # add params to map_new, reduce_new, finalize_new
       ['map', 'reduce', 'finalize'].each do |stage|

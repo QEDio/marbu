@@ -1,25 +1,25 @@
-%form{:id => "builder_form", :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => "post", :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
+%form{:id => 'builder_form', :action =>  @mrm.new? ? '/builder' : "/builder/#{@mrm.uuid}", :method => 'post', :class => 'builder', :data => {:transition => 'none', :ajax => 'false'}}
   - unless @mrm.new?
-    %input{:type => "hidden", :name => "_method", :value => "put"}
-  %div{:id => 'main', :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name}}
-    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name, :show_home => true}
+    %input{:type => 'hidden', :name => '_method', :value => 'put'}
+  %div{:id => 'main', :data => {:role => 'page', :title => @mrm.new? ? 'New map reduce object' : @mrm.name}}
+    = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? 'New map reduce object' : @mrm.name, :show_home => true}
     %div{:data => {:role => 'content'}}
       %ul{:data => {:role => 'listview'}}
         %li
-          %a{:href => "#misc", :data => {:transition => 'slide'}} Settings
-        - ["map", "reduce", "finalize"].each do |type|
+          %a{:href => '#misc', :data => {:transition => 'slide'}} Settings
+        - ['map', 'reduce', 'finalize'].each do |type|
           %li
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
       .row.submit.save_and_back
-        %button{:id => 'button-save', :type => "submit", :value => "Save", :class => "button", :data => {:icon => 'check'}} Save
-        %a{:id => 'button-execute', :href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? "ui-disabled" : nil } Execute
-        %a{:id => 'button-delete', :href => "/builder/#{@mrm.uuid}/delete", :class =>  @mrm.new? ? "ui-disabled delete" : "delete", :data => {:ajax => 'false', :role => 'button', :icon => 'delete'}} Delete
+        %button{:id => 'button-save', :type => 'submit', :value => 'Save', :class => 'button', :data => {:icon => 'check'}} Save
+        %a{:id => 'button-execute', :href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? 'ui-disabled' : nil } Execute
+        %a{:id => 'button-delete', :href => "/builder/#{@mrm.uuid}/delete", :class =>  @mrm.new? ? 'ui-disabled delete' : 'delete', :data => {:ajax => 'false', :role => 'button', :icon => 'delete'}} Delete
 
     = haml :_footer, :layout => false
 
-  - ["map", "reduce", "finalize"].each do |type|
-    %div.col{:id => type, :data => {:role => 'page', :title => @mrm.new? ? "New map reduce object" : @mrm.name}}
-      = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce object" : @mrm.name }
+  - ['map', 'reduce', 'finalize'].each do |type|
+    %div.col{:id => type, :data => {:role => 'page', :title => @mrm.new? ? 'New map reduce object' : @mrm.name}}
+      = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? 'New map reduce object' : @mrm.name }
       %div{:data => {:role => 'content'}}
         %h2= type.capitalize
         .builder

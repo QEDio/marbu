@@ -5,7 +5,7 @@
       .pair
         %label{:for => "#{type}_value_#{i}"} Emit-Value:
         %input{:type =>  "text", :name => "#{type}_value_name[]", :class => "text", :value => value.name, :id => "#{type}_value_#{i}"}
-        %a{:href => "/builder/sample_data/#{params[:uuid]}/#{type}_value_#{i}", :class => 'sample_data', :data => {:rel => 'dialog', :transition => 'flip', :corners => 'true', :shadow => 'true', :wrapperels => 'span', :role => 'button', :inline => 'true'}}
+        %a{:href => "/builder/#{params[:uuid]}/sample_data/#{type}", :class => 'sample_data', :data => {:rel => 'dialog', :transition => 'flip', :corners => 'true', :shadow => 'true', :wrapperels => 'span', :role => 'button', :inline => 'true'}}
           = 'Sample Data'
       .pair
         %label{:for => "#{type}_value_function_#{i}"} Emit-Value-Function:

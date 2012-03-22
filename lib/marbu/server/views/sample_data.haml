@@ -11,7 +11,7 @@
       - @data_samples.each_with_index do |document, i|
         %div.tree{:id => "sample_data_param_#{i+1}"}
           %h3="param_#{i+1}"
-          = sample_data_tree(document, params[:input_id])
+          = sample_data_tree(document, params[:type])
 
     %a{:data => {:rel => 'back', :role => 'button'}}
       ='Back'
