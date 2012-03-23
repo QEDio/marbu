@@ -125,9 +125,9 @@ module Marbu
         # TODo: defined in the configuration (security)
         @res = @mrf.misc.collection.map_reduce( @builder.map(:mongodb), @builder.reduce(:mongodb),
                                                 {
-                                                    :query => {"_id" => BSON::ObjectId('4f4da5dd83de3b60830000fa')},
+                                                    #:query => '"_id" => BSON::ObjectId("4f4da5dd83de3b60830000fa")',
                                                     #:query   => {"value.ad_group_till" => '2012-02-28T23:59:59+00:00'},
-                                                    #:query  => @builder.query,
+                                                    :query  => @builder.query,
                                                     :out    => {:replace => "tmp."+@mrm.map_reduce_finalize.misc.output_collection},
                                                     :finalize => @builder.finalize(:mongodb)
                                                 }

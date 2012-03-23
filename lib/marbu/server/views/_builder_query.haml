@@ -1,0 +1,20 @@
+%div{:id => 'query' :data => {:role => 'page', :title => "Query"}}
+  = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce" : @mrm.name }
+  %div{:data => {:role => 'content'}}
+    %h2 Settings
+    .clearfix.row.add-remove-element
+      .pair
+        %label{:for => "name"} Name:
+        %input{:type =>  "text", :name => "name", :class => "text", :value => @mrm.name, :id => "name"}
+      .pair
+        %label{:for => "database"} Database
+        %input{:type =>  "text", :name => "database", :class => "text", :value => @mrf.misc.database, :id => "database"}
+      .pair
+        %label{:for => "input_collection"} Input Collection:
+        %input{:type =>  "text", :name => "input_collection", :class => "text", :value => @mrf.misc.input_collection, :id => "input_collection"}
+      .pair
+        %label{:for => "output_collection"} Output Collection:
+        %input{:type =>  "text", :name => "output_collection", :class => "text", :value => @mrf.misc.output_collection, :id => "output_collection"}
+    - if @mrm.new?
+      %a{:href => "#main", :data => {:role => "button", :icon => 'arrow-r', :iconpos => "right"}} Continue
+  = haml :_footer, :layout => false

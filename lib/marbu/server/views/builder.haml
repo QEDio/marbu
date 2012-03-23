@@ -28,6 +28,7 @@
           = haml :_builder_col_code, :locals => {:method => method, :user_code => @mrf.send(method.to_sym).code, :generated_code => Marbu::Builder.new(@mrf).send(method.to_sym)}
       = haml :_footer, :layout => false
 
+  = haml :_builder_query, :layout => false
   = haml :_builder_misc, :layout => false
 
 - unless @mrm.new?
