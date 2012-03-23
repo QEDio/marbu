@@ -58,11 +58,17 @@ html[xmlns] .clearfix {
   color:      #333;
 }
 
+.builder input.ui-input-text,
+.builder textarea.ui-input-text {
+  display:  inline-block;
+  width:    70%;
+}
+
 .builder .col .pair {
 /*  float:        left;*/
 /*  margin-right: 2%;*/
 /*  width:        45%;*/
-    margin:   0 auto 15px auto;
+    margin:   0 auto 0 auto;
     padding:  5px 10px 5px 5px;
     float:    left;
     width:    40%;

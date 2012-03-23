@@ -10,6 +10,8 @@
         - ['map', 'reduce', 'finalize'].each do |type|
           %li
             %a{:href => "##{type}", :data => {:transition => 'slide'}}=type.capitalize
+        %li
+          %a{:href => '#query', :data => {:transition => 'slide'}} Query
       .row.submit.save_and_back
         %button{:id => 'button-save', :type => 'submit', :value => 'Save', :class => 'button', :data => {:icon => 'check'}} Save
         %a{:id => 'button-execute', :href => "/mapreduce/#{@mrm.uuid}", :data => {:transition => 'slide', :role => 'button', :icon => 'search'}, :class =>  @mrm.new? ? 'ui-disabled' : nil } Execute
