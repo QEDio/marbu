@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    marbu (0.1.0)
+    marbu (0.1.1)
       bson_ext
       haml
       mongo
