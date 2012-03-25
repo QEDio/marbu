@@ -23,6 +23,13 @@ module Marbu
         end
       end
 
+      def self.query(query, format)
+        case format
+          when :text then self.query_int(query)
+          when :mongodb then cleanup(self.query_int(query))
+        end
+      end
+
       private
         def self.map_int(map)
           <<-JS
@@ -49,6 +56,10 @@ function(key, value){
   #{get_emit(:finalize, finalize.values)}
 }
 JS
+        end
+
+        def self.query_int(query)
+          query.static.to_s
         end
 
         def self.cleanup(code)

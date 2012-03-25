@@ -1,15 +1,28 @@
-%div{:id => 'query', :class => 'builder', :data => {:role => 'page', :title => "Query"}}
-  = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? "New map reduce" : @mrm.name }
+%div{:id => 'query', :class => 'builder', :data => {:role => 'page', :title => 'Query'}}
+  = haml :_header_col, :layout => false, :locals => {:title => @mrm.new? ? 'New map reduce' : @mrm.name }
+  %h2 Filter-Query
+
+  -#%a{:data => {:role => 'button', :type => 'pulldown'}} Dynamic Queryfields
+  -#%div{:class => 'col', :data => {:role => 'content'}}
+  -#  .add-remove
+  -#    .clearfix.row.add-remove-element
+  -#      %div.pair
+  -#        %label
+  -#          Attribute:
+  -#          %input{:type => 'text', :name => 'name', :class => 'text', :value => @mrm.name}
+  -#      %div.pair
+  -#        %label
+  -#          Condition:
+  -#          %input{:type => 'text', :name => 'database', :class => 'text', :value => @mrf.misc.database}
+
+  %a{:data => {:role => 'button', :type => 'pulldown'}} Static Query
   %div{:class => 'col', :data => {:role => 'content'}}
-    %h2 Settings
     .add-remove
       .clearfix.row.add-remove-element
         %div.pair
           %label
-            Field:
-            %input{:type =>  "text", :name => "name", :class => "text", :value => @mrm.name}
-        %div.pair
-          %label
-            Condition:
-            %input{:type =>  "text", :name => "database", :class => "text", :value => @mrf.misc.database}
+            JSON-Query:
+            %textarea{:id => 'query_static', :type => 'text', :name => 'query_static', :class => 'text', :rows => 10, :cols => 50}= @mrf.query.static rescue ''
+
+
   = haml :_footer, :layout => false

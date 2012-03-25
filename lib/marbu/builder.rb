@@ -31,8 +31,9 @@ module Marbu
       @formatter_clasz.perform(@builder_clasz.finalize(@map_reduce_model.finalize, format))
     end
 
-    def query
-      @map_reduce_model.query.condition
+    def query(format = :text)
+      #@builder_clasz.query(@map_reduce_model.query, format)
+      @map_reduce_model.query.static
     end
 
     def log

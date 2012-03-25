@@ -125,25 +125,30 @@ module Marbu
         # TODo: defined in the configuration (security)
         @res = @mrf.misc.collection.map_reduce( @builder.map(:mongodb), @builder.reduce(:mongodb),
                                                 {
-                                                    #:query => '"_id" => BSON::ObjectId("4f4da5dd83de3b60830000fa")',
-                                                    #:query   => {"value.ad_group_till" => '2012-02-28T23:59:59+00:00'},
+                                                    #:query => {"_id" => BSON::ObjectId('4f4da5dd83de3b60830000fa')},
+                                                    #:query => {"uuid" => "4f4da5dd83de3b60830000fa"},
+                                                  #:query   => {"value.ad_group_till" => '2012-02-28T23:59:59+00:00'},
                                                     :query  => @builder.query,
-                                                    :out    => {:replace => "tmp."+@mrm.map_reduce_finalize.misc.output_collection},
+                                                    :out    => {:replace => 'tmp.'+@mrm.map_reduce_finalize.misc.output_collection},
                                                     :finalize => @builder.finalize(:mongodb)
                                                 }
         )
       rescue Mongo::OperationFailure => e
-        @parsed_error = Marbu::Models::Db::MongoDb::Exception.explain(e, @mrf)
-        @error        = @parsed_error[:message]
-        @fix_link     = Marbu::Models::ExceptionLink.get_exception_fix_link(@parsed_error[:id], params['uuid'])
+        begin
+          @parsed_error = Marbu::Models::Db::MongoDb::Exception.explain(e, @mrf)
+          @error        = @parsed_error[:message]
+          @fix_link     = Marbu::Models::ExceptionLink.get_exception_fix_link(@parsed_error[:id], params['uuid'])
+        rescue Marbu::Models::Db::MongoDb::Exception => e
+          @error        = e.to_s
+        end
       end
-
       show 'mapreduce'
     end
 
     def build_mrm_from_params(params)
       name                      = 'name'
       function                  = 'function'
+      puts params.inspect
 
       if (uuid = params['uuid'])
         mrm                       = Marbu::Models::Db::MongoDb.find_or_create_by(uuid: uuid)
@@ -163,8 +168,9 @@ module Marbu
                                     :code => {:text => params['finalize_code']}
                                   )
       mrf.query                 = Marbu::Models::Query.new(
-                                    :condition    => params['query_condition'],
-                                    :force_query  => params['query_force_query']
+                                    condition:      params['query_condition'],
+                                    force_query:    params['query_force_query'],
+                                    static:         params['query_static']
                                   )
       mrf.misc                  = Marbu::Models::Misc.new(
                                     :database           => params['database'],
