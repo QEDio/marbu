@@ -32,8 +32,9 @@ module Marbu
     end
 
     def query(format = :text)
-      #@builder_clasz.query(@map_reduce_model.query, format)
-      @map_reduce_model.query.static
+      @builder_clasz.query(@map_reduce_model.query, format)
+      # TODO: how to combine those two?
+      #@map_reduce_model.query.static
     end
 
     def log
