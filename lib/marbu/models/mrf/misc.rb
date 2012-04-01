@@ -1,7 +1,7 @@
 module Marbu
   module Models
     class Misc
-      attr_accessor :database, :input_collection, :output_collection, :output_operation
+      attr_accessor :database, :input_collection, :output_collection, :output_operation, :id
       # if filter_data is true, a query will be created depending on the filter parameters in filter_model
       # if filter_data is false, no query will generated
       # this is necessary for multiple sequentiell map_reduces: some will work on already filtered data (so no filter needed)
@@ -20,14 +20,16 @@ module Marbu
         self.output_collection  = params[:output_collection]
         self.output_operation   = params[:output_operation]
         self.filter_data        = params[:filter_data]
+        self.id                 = params[:id]
       end
 
       def default_params
         {
-          :value              => VALUE,
-          :document_offset    => DOCUMENT_OFFSET,
-          :filter_data        => false,
-          :output_operation   => "replace"
+          value:              VALUE,
+          document_offset:    DOCUMENT_OFFSET,
+          filter_data:        false,
+          output_operation:   'replace',
+          id:                 ''
         }
       end
 
@@ -49,11 +51,12 @@ module Marbu
 
       def serializable_hash
         {
-          :database           => database,
-          :input_collection   => input_collection,
-          :output_collection  => output_collection,
-          :output_operation   => output_operation,
-          :filter_data        => filter_data
+          database:           database,
+          input_collection:   input_collection,
+          output_collection:  output_collection,
+          output_operation:   output_operation,
+          filter_data:        filter_data,
+          id:                 id
         }.delete_if{|k,v|v.blank?}
       end
 
