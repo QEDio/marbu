@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sinatra-contrib'
   s.add_runtime_dependency 'haml'
   s.add_runtime_dependency 'mongo'
-  s.add_runtime_dependency 'mongoid'
+  s.add_runtime_dependency 'mongoid', '~> 2.7'
   s.add_runtime_dependency 'bson_ext'
   s.add_runtime_dependency 'uuid'
 end
