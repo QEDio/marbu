@@ -1,7 +1,7 @@
 module Marbu
   module Models
     class Base
-      attr_accessor :keys, :values
+      attr_accessor :keys, :values, :options
       attr_reader :code
 
       def initialize(ext_options = {})
@@ -10,6 +10,7 @@ module Marbu
         
         @keys           = options[:keys].map{ |k| Key.new(k) }
         @values         = options[:values].map{ |v| Value.new(v) }
+        @options        = options[:options]
         self.code       = options[:code]
       end
 

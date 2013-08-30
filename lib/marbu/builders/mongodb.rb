@@ -33,29 +33,29 @@ module Marbu
       private
         def self.map_int(map)
           <<-JS
-function(){
-  #{get_value(:map)}
-  #{map.code.text}
-  #{get_emit(:map, map.values, map.keys)}
-}
-JS
+            function(){
+              #{get_value(:map)}
+              #{map.code.text}
+              #{get_emit(:map, map.values, map.keys, map.options)}
+            }
+          JS
         end
         def self.reduce_int(reduce)
           <<-JS
-function(key,values){
-  #{get_value(:reduce)}
-  #{reduce.code.text}
-  #{get_emit(:reduce, reduce.values)}
-}
-JS
+          function(key,values){
+            #{get_value(:reduce)}
+            #{reduce.code.text}
+            #{get_emit(:reduce, reduce.values, reduce.keys, reduce.options)}
+          }
+        JS
         end
         def self.finalize_int(finalize)
           <<-JS
-function(key, value){
-  #{finalize.code.text}
-  #{get_emit(:finalize, finalize.values)}
-}
-JS
+            function(key, value){
+              #{finalize.code.text}
+              #{get_emit(:finalize, finalize.values, nil, finalize.options)}
+            }
+          JS
         end
 
         def self.query_int(query)
@@ -74,27 +74,32 @@ JS
           end
         end
 
-        def self.get_emit(function, values, keys = nil)
+        def self.get_emit(function, values, keys, options)
           case function
-            when :map        then emit_map(keys, values)
-            when :reduce     then emit_reduce(values)
-            when :finalize   then emit_finalize(values)
+            when :map        then emit_map(keys, values, options)
+            when :reduce     then emit_reduce(values, options)
+            when :finalize   then emit_finalize(values, options)
             else raise Exception.new("Emit for #{function} not defined!")
           end
         end
 
-        def self.emit_map(keys, values)
-          emit = "emit( #{emit_keys(keys)}, "
-          emit += emit_core(values)
-          emit += " );"
+        def self.emit_map(keys, values, options)
+          emit = ''
+
+          if options == nil || !options[:emit_in_code]
+            emit = "emit( #{emit_keys(keys)}, "
+            emit += emit_core(values)
+            emit += " );"
+          end
+
           return emit
         end
 
-        def self.emit_reduce(values)
+        def self.emit_reduce(values, options)
           "return " + emit_core(values) + ";"
         end
 
-        def self.emit_finalize(values)
+        def self.emit_finalize(values, options)
           "return " + emit_core(values) + ";"
         end
 
