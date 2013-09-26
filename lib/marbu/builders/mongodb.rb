@@ -68,7 +68,7 @@ module Marbu
 
         def self.get_value(function)
           case function
-            when :map        then "value=this.value;"
+            when :map        then "value=this.value;id = this._id;"
             when :reduce     then "value=values[0];"
             else raise Exception.new("Value-foo for #{function} not defined!")
           end
