@@ -58,11 +58,39 @@ module Marbu
 
       private
         def add(type, name, function)
-          function = Misc::DOCUMENT_OFFSET + name.to_s unless function
+          sanitized_name, func = get_function(name, function)
+
           case type
-            when :key     then @keys << Key.new({:name => name, :function => function})
-            when :value   then @values << Value.new({:name => name, :function => function})
+            when :key     then @keys << Key.new({:name => sanitized_name, :function => func})
+            when :value   then @values << Value.new({:name => sanitized_name, :function => func})
           end
+        end
+
+        # if we need to omit the automatic addition for the document offset (value) we provide a name like ::_id.realm
+        # or ::mega_bytes
+        # we reomve :: and use the remainder as function
+        # then we split the remainder at '.' and use the last part as name
+        def get_function(name, function)
+          sanitized_name  = name.to_s
+          sanitized       = false
+          func            = function
+
+          if sanitized_name.starts_with?("::")
+            sanitized_name = sanitized_name[2..-1]
+            sanitized     = true
+          end
+
+          unless function
+            if sanitized
+              func = sanitized_name
+            else
+              func = Misc::DOCUMENT_OFFSET + sanitized_name
+            end
+          end
+
+          sanitized_name = sanitized_name.split('.').last
+
+          return sanitized_name, func
         end
     end
 
