@@ -75,7 +75,8 @@ module Marbu
           unless function
             func = case type
               when :key then "(#{Misc::DOCUMENT_OFFSET}#{name} || #{Misc::ID_OFFSET}#{name})"
-              when :value then "(#{name} || #{Misc::DOCUMENT_OFFSET}#{name})"
+              #when :value then "(#{Misc::DOCUMENT_OFFSET}#{name} || #{name})"
+              when :value then "(typeof #{name} != 'undefined' ? #{name} : #{Misc::DOCUMENT_OFFSET}#{name})"
             end
           end
 
