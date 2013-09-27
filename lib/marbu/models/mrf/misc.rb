@@ -11,6 +11,7 @@ module Marbu
 
       VALUE = :value
       DOCUMENT_OFFSET = VALUE.to_s + "."
+      ID_OFFSET       = 'id.'
 
       def initialize( ext_params = {} )
         params              = default_params.merge( ext_params.delete_if{|k,v|v.blank?} )
