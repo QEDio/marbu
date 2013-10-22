@@ -90,11 +90,11 @@ module Marbu
 
       private
         def general_setter(var, klass)
-          if( var.is_a?(klass) )
+          if var.is_a?(klass)
             ret_val = var
-          elsif( var.is_a?( ::Hash ) )
+          elsif var.is_a?( ::Hash )
             ret_val = klass.new(var)
-          elsif( var.nil? )
+          elsif var.nil?
             ret_val = klass.new
           else
             raise Exception.new("Unsupported var type: #{var.class}")
