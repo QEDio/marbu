@@ -1,7 +1,7 @@
 module Marbu
   module Models
     class Misc
-      attr_accessor :database, :input_collection, :output_collection, :output_operation, :id
+      attr_accessor :database, :input_collection, :input_collection_is_source, :output_collection, :output_operation, :id
       # if filter_data is true, a query will be created depending on the filter parameters in filter_model
       # if filter_data is false, no query will generated
       # this is necessary for multiple sequentiell map_reduces: some will work on already filtered data (so no filter needed)
@@ -14,28 +14,30 @@ module Marbu
       ID_OFFSET       = 'id.'
 
       def initialize( ext_params = {} )
-        params              = default_params.merge( ext_params.delete_if{|k,v|v.blank?} )
+        params                          = default_params.merge( ext_params.delete_if{|k,v|v.blank?} )
 
-        self.database           = params[:database]
-        self.input_collection   = params[:input_collection]
-        self.output_collection  = params[:output_collection]
-        self.output_operation   = params[:output_operation]
-        self.filter_data        = params[:filter_data]
-        self.id                 = params[:id]
+        self.database                   = params[:database]
+        self.input_collection           = params[:input_collection]
+        self.input_collection_is_source = params[:input_collection_is_source]
+        self.output_collection          = params[:output_collection]
+        self.output_operation           = params[:output_operation]
+        self.filter_data                = params[:filter_data]
+        self.id                         = params[:id]
       end
 
       def default_params
         {
-          value:              VALUE,
-          document_offset:    DOCUMENT_OFFSET,
-          filter_data:        false,
-          output_operation:   'replace',
-          id:                 ''
+          value:                      VALUE,
+          document_offset:            DOCUMENT_OFFSET,
+          filter_data:                false,
+          output_operation:           'replace',
+          id:                         '',
+          input_collection_is_source: false
         }
       end
 
       def filter_data=(fd)
-        if( !!fd == fd )
+        if !!fd == fd
           @filter_data = fd
         else
           raise Exception.new("Need a boolean value!")
@@ -52,12 +54,13 @@ module Marbu
 
       def serializable_hash
         {
-          database:           database,
-          input_collection:   input_collection,
-          output_collection:  output_collection,
-          output_operation:   output_operation,
-          filter_data:        filter_data,
-          id:                 id
+          database:                     database,
+          input_collection:             input_collection,
+          input_collection_is_source:   input_collection,
+          output_collection:            output_collection,
+          output_operation:             output_operation,
+          filter_data:                  filter_data,
+          id:                           id
         }.delete_if{|k,v|v.blank?}
       end
 
